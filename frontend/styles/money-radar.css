@@ -1,0 +1,480 @@
+/*
+ * Money Radar — Design System CSS Overrides
+ * 
+ * Apply this to feeds.fun's frontend to match DESIGN.md.
+ * 
+ * Usage: Import this file in feeds.fun's main CSS/SCSS entry point.
+ * Or add as a <link> tag in index.html.
+ */
+
+/* ===== Font Import ===== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Geist+Mono:wght@400;500&display=swap');
+
+/* ===== Theme: Authoritative (默认) ===== */
+:root,
+[data-theme="authoritative"] {
+  --mr-bg-primary: #ffffff;
+  --mr-bg-secondary: #fafafa;
+  --mr-bg-tertiary: #f5f5f5;
+  --mr-bg-hover: #f0f0f0;
+  --mr-text-primary: #1a1a1a;
+  --mr-text-secondary: #4a4a4a;
+  --mr-text-tertiary: #8a8a8a;
+  --mr-text-muted: #b0b0b0;
+  --mr-accent: #c41e3a;
+  --mr-accent-dim: rgba(196, 30, 58, 0.08);
+  --mr-border: #e0e0e0;
+  --mr-border-heavy: #1a1a1a;
+  --mr-border-light: #f0f0f0;
+  --mr-success: #1a7a1a;
+  --mr-warning: #b45309;
+  --mr-error: #c41e3a;
+
+  /* Typography */
+  --mr-font-serif: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+  --mr-font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mr-font-mono: 'Geist Mono', 'Courier New', monospace;
+
+  /* Spacing */
+  --mr-space-xs: 4px;
+  --mr-space-sm: 8px;
+  --mr-space-md: 12px;
+  --mr-space-lg: 16px;
+  --mr-space-xl: 24px;
+  --mr-space-2xl: 32px;
+
+  /* Border Radius — 0 for news, small for UI elements */
+  --mr-radius-sm: 2px;
+  --mr-radius-md: 4px;
+  --mr-radius-lg: 0px;
+}
+
+/* ===== Theme: E-ink (墨水屏) ===== */
+[data-theme="eink"] {
+  --mr-bg-primary: #ffffff;
+  --mr-bg-secondary: #ffffff;
+  --mr-bg-tertiary: #f5f5f5;
+  --mr-bg-hover: #eeeeee;
+  --mr-text-primary: #000000;
+  --mr-text-secondary: #000000;
+  --mr-text-tertiary: #555555;
+  --mr-text-muted: #888888;
+  --mr-accent: #000000;
+  --mr-accent-dim: rgba(0, 0, 0, 0.05);
+  --mr-border: #000000;
+  --mr-border-heavy: #000000;
+  --mr-border-light: #cccccc;
+  --mr-success: #000000;
+  --mr-warning: #333333;
+  --mr-error: #000000;
+}
+
+/* ===== Theme: Easy Eyes (养眼) ===== */
+[data-theme="easyeyes"] {
+  --mr-bg-primary: #f8f6f1;
+  --mr-bg-secondary: #f3f0e8;
+  --mr-bg-tertiary: #ebe8df;
+  --mr-bg-hover: #e5e1d6;
+  --mr-text-primary: #3d3529;
+  --mr-text-secondary: #5a5044;
+  --mr-text-tertiary: #8a8070;
+  --mr-text-muted: #b0a898;
+  --mr-accent: #8b6914;
+  --mr-accent-dim: rgba(139, 105, 20, 0.1);
+  --mr-border: #d9d3c7;
+  --mr-border-heavy: #3d3529;
+  --mr-border-light: #ebe8df;
+  --mr-success: #5a6e2a;
+  --mr-warning: #8b6914;
+  --mr-error: #8b2500;
+}
+
+/* ===== Global Reset ===== */
+body {
+  font-family: var(--mr-font-sans) !important;
+  background-color: var(--mr-bg-primary) !important;
+  color: var(--mr-text-primary) !important;
+  line-height: 1.6 !important;
+  font-size: 14px !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* ===== Typography ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--mr-font-serif) !important;
+  color: var(--mr-text-primary) !important;
+  letter-spacing: -0.3px !important;
+}
+
+h1 { font-size: 24px !important; font-weight: 700 !important; }
+h2 { font-size: 20px !important; font-weight: 600 !important; }
+h3 { font-size: 16px !important; font-weight: 600 !important; }
+
+p, span, div, label {
+  font-family: var(--mr-font-sans) !important;
+}
+
+code, pre, .mono {
+  font-family: var(--mr-font-mono) !important;
+}
+
+/* ===== Score Display ===== */
+.score,
+[class*="score"],
+[class*="Score"] {
+  font-family: var(--mr-font-mono) !important;
+  font-weight: 500 !important;
+  color: var(--mr-text-primary) !important;
+}
+
+/* ===== Tags ===== */
+.tag,
+[class*="tag"],
+[class*="Tag"] {
+  font-size: 12px !important;
+  color: var(--mr-text-tertiary) !important;
+  background: none !important;
+  border: none !important;
+  padding: 2px 0 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.tag::before,
+[class*="tag"]::before {
+  content: '#' !important;
+  color: var(--mr-text-muted) !important;
+}
+
+/* ===== News List ===== */
+.news-item,
+[class*="news-item"],
+[class*="NewsItem"] {
+  border-bottom: 1px solid var(--mr-border-light) !important;
+  border-radius: 0 !important;
+  padding: var(--mr-space-lg) 0 !important;
+  background: transparent !important;
+}
+
+.news-item:hover,
+[class*="news-item"]:hover,
+[class*="NewsItem"]:hover {
+  background: var(--mr-bg-secondary) !important;
+}
+
+.news-title,
+[class*="news-title"],
+[class*="NewsTitle"] {
+  font-family: var(--mr-font-serif) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: var(--mr-text-primary) !important;
+}
+
+.news-title:hover,
+[class*="news-title"]:hover,
+[class*="NewsTitle"]:hover {
+  color: var(--mr-accent) !important;
+}
+
+/* First news item — headline style */
+.news-item:first-child,
+[class*="news-item"]:first-child,
+[class*="NewsItem"]:first-child {
+  border-bottom: 2px solid var(--mr-border-heavy) !important;
+  padding-bottom: var(--mr-space-xl) !important;
+  margin-bottom: var(--mr-space-md) !important;
+}
+
+.news-item:first-child .news-title,
+[class*="news-item"]:first-child [class*="news-title"],
+[class*="NewsItem"]:first-child [class*="NewsTitle"] {
+  font-size: 22px !important;
+}
+
+/* ===== Sidebar ===== */
+.sidebar,
+[class*="sidebar"],
+[class*="Sidebar"] {
+  background: var(--mr-bg-primary) !important;
+  border-right: 1px solid var(--mr-border) !important;
+}
+
+.nav-item,
+[class*="nav-item"],
+[class*="NavItem"] {
+  border-left: 2px solid transparent !important;
+  border-radius: 0 !important;
+  padding: var(--mr-space-sm) var(--mr-space-md) !important;
+  color: var(--mr-text-secondary) !important;
+  font-size: 13px !important;
+}
+
+.nav-item:hover,
+[class*="nav-item"]:hover,
+[class*="NavItem"]:hover {
+  background: var(--mr-bg-secondary) !important;
+  color: var(--mr-text-primary) !important;
+}
+
+.nav-item.active,
+[class*="nav-item"].active,
+[class*="NavItem"][data-active="true"] {
+  border-left-color: var(--mr-accent) !important;
+  color: var(--mr-text-primary) !important;
+  font-weight: 500 !important;
+}
+
+/* ===== Logo ===== */
+.logo,
+[class*="logo"],
+[class*="Logo"] {
+  font-family: var(--mr-font-serif) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--mr-text-primary) !important;
+  letter-spacing: -0.5px !important;
+}
+
+/* ===== Buttons ===== */
+button,
+.btn,
+[class*="btn"],
+[class*="Btn"] {
+  border-radius: var(--mr-radius-md) !important;
+  font-family: var(--mr-font-sans) !important;
+  font-size: 13px !important;
+  letter-spacing: 0.3px !important;
+}
+
+button.primary,
+.btn-primary,
+[class*="btn-primary"],
+[class*="BtnPrimary"] {
+  background: var(--mr-text-primary) !important;
+  color: var(--mr-bg-primary) !important;
+  border: none !important;
+}
+
+button.secondary,
+.btn-secondary,
+[class*="btn-secondary"],
+[class*="BtnSecondary"] {
+  background: transparent !important;
+  color: var(--mr-text-secondary) !important;
+  border: 1px solid var(--mr-border) !important;
+}
+
+/* ===== Input Fields ===== */
+input,
+textarea,
+select {
+  font-family: var(--mr-font-sans) !important;
+  border: 1px solid var(--mr-border) !important;
+  border-bottom: 2px solid var(--mr-border-heavy) !important;
+  border-radius: var(--mr-radius-md) !important;
+  background: var(--mr-bg-secondary) !important;
+  color: var(--mr-text-primary) !important;
+  padding: var(--mr-space-sm) var(--mr-space-md) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  border-bottom-color: var(--mr-accent) !important;
+}
+
+/* ===== Cards / Panels ===== */
+.card,
+.panel,
+[class*="card"],
+[class*="Card"],
+[class*="panel"],
+[class*="Panel"] {
+  border-radius: 0 !important;
+  border: 1px solid var(--mr-border) !important;
+  background: var(--mr-bg-primary) !important;
+  box-shadow: none !important;
+}
+
+/* ===== Links ===== */
+a {
+  color: var(--mr-text-primary) !important;
+  text-decoration: none !important;
+}
+
+a:hover {
+  color: var(--mr-accent) !important;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--mr-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mr-border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mr-text-tertiary);
+}
+
+/* ===== Expiry Banner ===== */
+.expiry-banner,
+[class*="expiry-banner"] {
+  background: var(--mr-accent-dim) !important;
+  border-bottom: 1px solid var(--mr-border) !important;
+  padding: var(--mr-space-sm) var(--mr-space-lg) !important;
+  font-size: 13px !important;
+  color: var(--mr-accent) !important;
+}
+
+/* ===== Stats Bar ===== */
+.stats-bar,
+[class*="stats-bar"],
+[class*="StatsBar"] {
+  display: flex !important;
+  gap: var(--mr-space-xl) !important;
+  padding: var(--mr-space-md) 0 !important;
+  border-bottom: 1px solid var(--mr-border-light) !important;
+  font-size: 12px !important;
+}
+
+.stat-value,
+[class*="stat-value"],
+[class*="StatValue"] {
+  font-family: var(--mr-font-mono) !important;
+  font-weight: 500 !important;
+}
+
+/* ===== View Switcher ===== */
+.view-switcher,
+[class*="view-switcher"],
+[class*="ViewSwitcher"] {
+  display: flex !important;
+  gap: var(--mr-space-lg) !important;
+  font-size: 12px !important;
+}
+
+.view-btn,
+[class*="view-btn"],
+[class*="ViewBtn"] {
+  background: none !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  color: var(--mr-text-tertiary) !important;
+  padding: var(--mr-space-xs) 0 !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+}
+
+.view-btn.active,
+[class*="view-btn"].active,
+[class*="ViewBtn"][data-active="true"] {
+  color: var(--mr-text-primary) !important;
+  border-bottom-color: var(--mr-accent) !important;
+}
+
+/* ===== Empty States ===== */
+.empty-state,
+[class*="empty-state"],
+[class*="EmptyState"] {
+  text-align: center !important;
+  padding: var(--mr-space-2xl) !important;
+  color: var(--mr-text-tertiary) !important;
+}
+
+.empty-state h3,
+[class*="empty-state"] h3,
+[class*="EmptyState"] h3 {
+  font-family: var(--mr-font-serif) !important;
+  font-size: 18px !important;
+  color: var(--mr-text-secondary) !important;
+  margin-bottom: var(--mr-space-sm) !important;
+}
+
+/* ===== Loading States ===== */
+.loading,
+[class*="loading"],
+[class*="Loading"] {
+  color: var(--mr-text-tertiary) !important;
+  font-size: 13px !important;
+}
+
+/* ===== Skeleton Loading ===== */
+.skeleton,
+[class*="skeleton"],
+[class*="Skeleton"] {
+  background: linear-gradient(90deg, var(--mr-bg-tertiary) 25%, var(--mr-bg-hover) 50%, var(--mr-bg-tertiary) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: skeleton-loading 1.5s infinite !important;
+  border-radius: var(--mr-radius-sm) !important;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px !important;
+  }
+
+  .news-title,
+  [class*="news-title"],
+  [class*="NewsTitle"] {
+    font-size: 17px !important;
+  }
+
+  .news-item:first-child .news-title,
+  [class*="news-item"]:first-child [class*="news-title"],
+  [class*="NewsItem"]:first-child [class*="NewsTitle"] {
+    font-size: 20px !important;
+  }
+}
+
+/* ===== Dark Mode Override for E-ink Theme ===== */
+[data-theme="eink"] {
+  --mr-bg-primary: #ffffff;
+  --mr-bg-secondary: #ffffff;
+  --mr-bg-tertiary: #f5f5f5;
+  --mr-bg-hover: #eeeeee;
+  --mr-text-primary: #000000;
+  --mr-text-secondary: #000000;
+  --mr-text-tertiary: #555555;
+  --mr-text-muted: #888888;
+  --mr-accent: #000000;
+  --mr-accent-dim: rgba(0, 0, 0, 0.05);
+  --mr-border: #000000;
+  --mr-border-heavy: #000000;
+  --mr-border-light: #cccccc;
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .sidebar,
+  [class*="sidebar"],
+  [class*="Sidebar"] {
+    display: none !important;
+  }
+
+  .news-item,
+  [class*="news-item"],
+  [class*="NewsItem"] {
+    page-break-inside: avoid !important;
+  }
+}

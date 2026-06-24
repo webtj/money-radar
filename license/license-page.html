@@ -1,0 +1,315 @@
+<!--
+  Money Radar — License Page Component
+  
+  This is a standalone HTML file for testing.
+  For integration into feeds.fun's Vue app, see LicensePage.vue below.
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Radar — 授权验证</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #8a8a8a;
+  --text-muted: #b0b0b0;
+  --accent: #c41e3a;
+  --accent-dim: rgba(196, 30, 58, 0.08);
+  --border: #e0e0e0;
+  --border-heavy: #1a1a1a;
+  --success: #1a7a1a;
+  --error: #c41e3a;
+  --font-serif: 'Noto Serif SC', Georgia, serif;
+  --font-sans: 'Noto Sans SC', -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'Courier New', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+.license-container {
+  width: 380px;
+  text-align: center;
+}
+
+.logo {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -1px;
+}
+
+.logo span {
+  color: var(--accent);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  margin-bottom: 40px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.license-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-bottom: 2px solid var(--border-heavy);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 3px;
+  transition: border-color 0.15s ease;
+}
+
+.license-input:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+
+.license-input.error {
+  border-bottom-color: var(--error);
+}
+
+.license-input.success {
+  border-bottom-color: var(--success);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  letter-spacing: 1px;
+  transition: opacity 0.15s ease;
+}
+
+.submit-btn:hover {
+  opacity: 0.85;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submit-btn.loading {
+  opacity: 0.7;
+}
+
+.message {
+  margin-top: 16px;
+  font-size: 13px;
+  min-height: 20px;
+  transition: all 0.15s ease;
+}
+
+.message.error {
+  color: var(--error);
+}
+
+.message.success {
+  color: var(--success);
+}
+
+.message.warning {
+  color: #b45309;
+}
+
+.footer {
+  margin-top: 32px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.footer a {
+  color: var(--text-tertiary);
+  text-decoration: underline;
+}
+
+.expiry-warning {
+  background: var(--accent-dim);
+  border: 1px solid rgba(196, 30, 58, 0.2);
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--accent);
+  display: none;
+}
+
+.expiry-warning.show {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="license-container">
+  <div class="logo">Money<span>Radar</span></div>
+  <div class="subtitle">输入授权码开始使用</div>
+  
+  <div class="expiry-warning" id="expiryWarning"></div>
+  
+  <form id="licenseForm" onsubmit="return handleSubmit(event)">
+    <div class="form-group">
+      <input 
+        type="text" 
+        id="licenseInput" 
+        class="license-input"
+        placeholder="粘贴授权码"
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+      >
+    </div>
+    <button type="submit" class="submit-btn" id="submitBtn">验证授权码</button>
+  </form>
+  
+  <div class="message" id="message"></div>
+  
+  <div class="footer">
+    没有授权码？联系管理员获取<br>
+    <a href="#">关于 Money Radar</a>
+  </div>
+</div>
+
+<script>
+const API_BASE = window.location.origin;
+
+// Check if license already exists in cookie
+document.addEventListener('DOMContentLoaded', () => {
+  const existing = getCookie('mr_license');
+  if (existing) {
+    checkExistingLicense(existing);
+  }
+});
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
+async function checkExistingLicense(code) {
+  try {
+    const resp = await fetch(`${API_BASE}/api/license/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license_code: code }),
+    });
+    const data = await resp.json();
+    
+    if (data.valid) {
+      showMessage('授权有效，正在跳转...', 'success');
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1000);
+    }
+  } catch (e) {
+    // Ignore, show the form
+  }
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  
+  const input = document.getElementById('licenseInput');
+  const btn = document.getElementById('submitBtn');
+  const code = input.value.trim();
+  
+  if (!code) {
+    showMessage('请输入授权码', 'error');
+    input.classList.add('error');
+    return false;
+  }
+  
+  // UI state: loading
+  btn.textContent = '验证中...';
+  btn.disabled = true;
+  btn.classList.add('loading');
+  input.classList.remove('error', 'success');
+  hideMessage();
+  
+  try {
+    const resp = await fetch(`${API_BASE}/api/license/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license_code: code }),
+    });
+    const data = await resp.json();
+    
+    if (data.valid) {
+      input.classList.add('success');
+      showMessage(data.message || '授权成功', 'success');
+      
+      // Set cookie
+      document.cookie = `mr_license=${code};max-age=${86400*365};path=/;samesite=lax`;
+      
+      // Redirect after short delay
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+    } else {
+      input.classList.add('error');
+      
+      if (data.error === 'expired') {
+        showMessage('授权码已过期，请续订后继续使用', 'error');
+      } else {
+        showMessage(data.message || '授权码无效，请检查后重试', 'error');
+      }
+    }
+  } catch (err) {
+    showMessage('网络错误，请稍后重试', 'error');
+  } finally {
+    btn.textContent = '验证授权码';
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+  
+  return false;
+}
+
+function showMessage(text, type) {
+  const el = document.getElementById('message');
+  el.textContent = text;
+  el.className = `message ${type}`;
+}
+
+function hideMessage() {
+  const el = document.getElementById('message');
+  el.textContent = '';
+  el.className = 'message';
+}
+</script>
+
+</body>
+</html>

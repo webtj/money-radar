@@ -1,0 +1,117 @@
+# Money Radar — Tag Processors Configuration
+# Chinese-optimized LLM prompt for news tagging
+
+[[tag_processors]]
+  id = 1
+  enabled = true
+  workers = 1
+  name = "domain"
+  type = "domain"
+
+  [[tag_processors.routes]]
+    id = "default"
+    allowed_for_collections = true
+    allowed_for_users = true
+    allowed_for_quality_tests = true
+
+[[tag_processors]]
+  id = 2
+  enabled = true
+  workers = 1
+  name = "native_tags"
+  type = "native_tags"
+
+  [[tag_processors.routes]]
+    id = "default"
+    allowed_for_collections = true
+    allowed_for_users = true
+    allowed_for_quality_tests = true
+
+[[tag_processors]]
+  id = 3
+  enabled = true
+  workers = 3
+  name = "deepseek_llm_general"
+  type = "llm_general"
+
+  entry_template = "<h1>{entry.title}</h1><a href='{entry.external_url}'>full article</a>{entry.body}"
+
+  text_cleaner = "ffun.librarian.text_cleaners.clear_html"
+  tags_extractor = "ffun.librarian.tag_extractors.dog_tags_extractor"
+
+  llm_provider = "openai"
+
+  text_parts_intersection = 200
+  max_tokens_per_entry = 5000
+
+  [[tag_processors.routes]]
+    id = "default"
+    allowed_for_collections = true
+    allowed_for_users = true
+    allowed_for_quality_tests = true
+
+  [tag_processors.llm_config]
+    model = "deepseek-chat"
+    max_return_tokens = 8192
+    temperature = 0
+    top_p = 0
+    system = """
+你是一位资深的信息分析专家，擅长从新闻文章中提取关键标签。
+
+你的任务是分析给定的文章，按以下步骤操作：
+
+**步骤 1**：列出 13 个用户可能搜索这篇文章的场景。
+
+*输出格式：*
+
+1. **场景1名称**：场景描述
+2. **场景2名称**：场景描述
+...
+13. **场景13名称**：场景描述
+
+---
+
+**步骤 2**：为每个场景，列出 4 个最可能的标签。
+
+*输出格式：*
+
+- **场景1名称**：#标签1-1, #标签1-2, #标签1-3, #标签1-4
+- **场景2名称**：#标签2-1, #标签2-2, #标签2-3, #标签2-4
+...
+- **场景13名称**：#标签13-1, #标签13-2, #标签13-3, #标签13-4
+
+---
+
+**标签格式规则：**
+
+- **允许格式**：`#词`、`#词-词-...`、`#词-数字-...`
+- **语言**：所有标签必须使用中文。
+- **大小写**：不适用（中文无大小写）。
+- **缩写**：展开常见缩写。例如：
+    - `#央行` 不需要展开
+    - `#GDP` → `#国内生产总值`
+    - `#CPI` → `#消费者物价指数`
+
+---
+
+**重要提示：**
+
+- 回答质量至关重要。
+- 每个标签在所有场景中必须唯一。
+- 所有标签必须严格遵守**标签格式规则**。
+- 优先使用金融、经济、科技、政策、市场等领域的专业术语。
+- 如果文章涉及具体公司或人物，将其作为标签。
+"""
+
+[[tag_processors]]
+  id = 5
+  enabled = true
+  workers = 1
+  name = "upper_case_title"
+  type = "upper_case_title"
+
+  [[tag_processors.routes]]
+    id = "default"
+    allowed_for_collections = true
+    allowed_for_users = true
+    allowed_for_quality_tests = true
