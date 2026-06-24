@@ -29,6 +29,7 @@ INIT_CALL = "    setup_license(app)"
 def find_app_file(feedsfun_dir: str) -> Optional[str]:
     """Find feeds.fun's application.py."""
     candidates = [
+        os.path.join(feedsfun_dir, "ffun", "ffun", "application", "application.py"),
         os.path.join(feedsfun_dir, "ffun", "ffun", "application.py"),
         os.path.join(feedsfun_dir, "ffun", "application.py"),
     ]
