@@ -22,26 +22,49 @@
 
 ## High Priority (Sprint 2) — 授权码系统
 
-- [ ] **授权码生成工具**
-  - 生成 JWT 格式的授权码
-  - Payload 包含: user_id, expiry_date, permission_level
-  - 用 HMAC-SHA256 签名
-  - 提供 CLI 工具生成授权码
-  - Depends on: feeds.fun fork 完成
+- [ ] **数据库：创建 license 表**
+  - mr_licenses: code_hash, user_id, expiry, level, status
+  - mr_user_feeds: user_id, feed_id（per-user RSS 源）
+  - mr_user_rules: user_id, rule_id（per-user 评分规则）
+  - Depends on: PostgreSQL 已部署
 
-- [ ] **后端授权码校验 API**
-  - 新增 `/api/license/validate` 端点
-  - 新增授权码校验中间件（拦截所有请求）
-  - 检查签名、过期时间、黑名单
-  - 存储授权码到 PostgreSQL（支持吊销）
-  - Depends on: feeds.fun fork 完成
+- [ ] **后端：授权码中间件**
+  - 每个请求校验 X-License-Code header
+  - 验证 JWT 签名 + 过期时间
+  - 查询数据库检查 status（是否吊销）
+  - 提取 user_id 注入请求上下文
+  - 过期/无效返回 401 + 过期提示
+  - Depends on: license 表创建
 
-- [ ] **前端授权码页面**
-  - 首次访问弹出授权码输入页面
-  - 授权码存入 localStorage
-  - 过期前提醒续订
-  - 过期后锁定，无法使用
-  - Depends on: 后端校验 API 完成
+- [ ] **后端：授权码 API**
+  - POST /api/license/validate — 验证授权码
+  - POST /api/license/status — 查询授权码状态
+  - POST /api/license/renew — 续订（管理员）
+  - Depends on: 授权码中间件
+
+- [ ] **后端：per-user 数据隔离**
+  - 修改 feeds.fun 的 API，所有查询加 user_id 过滤
+  - RSS 源：每个用户独立的订阅列表
+  - 评分规则：每个用户独立的规则集
+  - 新闻条目：全局共享（来自 RSSHub），但评分/标记 per-user
+  - Depends on: 授权码中间件
+
+- [ ] **前端：授权码输入页面**
+  - 全屏页面，品牌 logo + 授权码输入框
+  - 验证成功 → 存入 localStorage → 跳转主页
+  - 验证失败 → 错误提示
+  - Depends on: 授权码 API
+
+- [ ] **前端：过期弹窗**
+  - 每次 API 返回 401 → 弹窗提示过期
+  - 引导续订（联系方式/购买链接）
+  - 弹窗后锁定，不可操作
+  - Depends on: 授权码中间件
+
+- [ ] **前端：API 请求携带授权码**
+  - 所有 fetch 请求 header 加 X-License-Code
+  - 从 localStorage 读取
+  - Depends on: 授权码输入页面
 
 ## Medium Priority (Sprint 3)
 

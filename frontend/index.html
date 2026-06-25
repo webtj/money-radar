@@ -28,6 +28,61 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 14px; }
+
+/* ===== License Page ===== */
+.license-page {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; background: var(--bg);
+}
+.license-card {
+  width: 380px; text-align: center;
+}
+.license-logo {
+  font-family: var(--serif); font-size: 36px; font-weight: 700;
+  color: var(--text); margin-bottom: 4px; letter-spacing: -1px;
+}
+.license-logo span { color: var(--accent); }
+.license-subtitle {
+  font-size: 13px; color: var(--text3); letter-spacing: 0.5px; margin-bottom: 40px;
+}
+.license-input {
+  width: 100%; padding: 14px 16px;
+  background: var(--bg2); border: 1px solid var(--border); border-bottom: 2px solid var(--border-heavy);
+  color: var(--text); font-family: var(--mono); font-size: 15px;
+  text-align: center; letter-spacing: 2px;
+}
+.license-input:focus { outline: none; border-bottom-color: var(--accent); }
+.license-input.error { border-bottom-color: var(--accent); }
+.license-input.success { border-bottom-color: var(--success, #1a7a1a); }
+.license-btn {
+  width: 100%; padding: 14px; margin-top: 16px;
+  background: var(--text); color: var(--bg); border: none;
+  font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; letter-spacing: 1px;
+}
+.license-btn:hover { opacity: 0.9; }
+.license-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.license-msg { margin-top: 16px; font-size: 13px; min-height: 20px; }
+.license-msg.error { color: var(--accent); }
+.license-msg.success { color: #1a7a1a; }
+.license-footer { margin-top: 32px; font-size: 12px; color: var(--text4); }
+
+/* ===== Expired Overlay ===== */
+.expired-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.expired-card {
+  background: var(--bg); padding: 40px; text-align: center; width: 360px;
+}
+.expired-card h2 { font-family: var(--serif); font-size: 22px; margin-bottom: 12px; }
+.expired-card p { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
+.expired-card button {
+  background: var(--text); color: var(--bg); border: none; padding: 12px 32px;
+  font-family: var(--sans); font-size: 14px; cursor: pointer;
+}
+
+/* ===== Main App ===== */
 .app { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; max-width: 1200px; margin: 0 auto; }
 .sidebar { border-right: 1px solid var(--border); padding: 24px 16px; }
 .logo { font-family: var(--serif); font-size: 20px; font-weight: 700; padding-bottom: 16px; border-bottom: 2px solid var(--border-heavy); margin-bottom: 24px; }
@@ -56,12 +111,11 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 .news-tags { display: flex; gap: 12px; margin-top: 6px; }
 .tag { font-size: 11px; color: var(--text3); }
 .add-feed { display: flex; gap: 8px; margin-bottom: 24px; }
-.add-feed input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-bottom: 2px solid var(--border-heavy); font-family: var(--sans); font-size: 13px; }
+.add-feed input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-bottom: 2px solid var(--border-heavy); font-family: var(--sans); font-size: 13px; background: var(--bg); color: var(--text); }
 .add-feed input:focus { outline: none; border-bottom-color: var(--accent); }
 .add-feed button { padding: 10px 20px; background: var(--text); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; cursor: pointer; }
 .empty { text-align: center; padding: 48px 0; color: var(--text3); }
 .empty h3 { font-family: var(--serif); font-size: 18px; color: var(--text2); margin-bottom: 8px; }
-.loading { text-align: center; padding: 24px; color: var(--text3); font-size: 13px; }
 .rule { padding: 12px 0; border-bottom: 1px solid var(--bg3); display: flex; justify-content: space-between; align-items: center; }
 .rule-tags { font-size: 13px; }
 .rule-score { font-family: var(--mono); font-size: 14px; color: var(--accent); }
@@ -75,7 +129,30 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 </style>
 </head>
 <body>
-<div class="app">
+
+<!-- License Page (hidden by default if authenticated) -->
+<div id="license-page" class="license-page" style="display:none">
+  <div class="license-card">
+    <div class="license-logo">Money<span>Radar</span></div>
+    <div class="license-subtitle">输入授权码开始使用</div>
+    <input type="text" id="license-input" class="license-input" placeholder="粘贴授权码" autocomplete="off" spellcheck="false" autofocus>
+    <button id="license-btn" class="license-btn" onclick="submitLicense()">验证授权码</button>
+    <div id="license-msg" class="license-msg"></div>
+    <div class="license-footer">没有授权码？联系管理员获取</div>
+  </div>
+</div>
+
+<!-- Expired Overlay (hidden by default) -->
+<div id="expired-overlay" class="expired-overlay" style="display:none">
+  <div class="expired-card">
+    <h2>授权已过期</h2>
+    <p>您的授权码已过期，无法继续使用。请联系管理员续订。</p>
+    <button onclick="showLicensePage()">输入新授权码</button>
+  </div>
+</div>
+
+<!-- Main App (hidden by default) -->
+<div id="app" class="app" style="display:none">
   <aside class="sidebar">
     <div class="logo">Money<span>Radar</span></div>
     <div class="nav-section">
@@ -101,72 +178,151 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
       <div class="nav-item" onclick="showView('rules')">评分规则</div>
     </div>
   </aside>
-  <main class="main" id="content"><div class="loading">加载中...</div></main>
+  <main class="main" id="content"><div style="text-align:center;padding:48px;color:var(--text3)">加载中...</div></main>
 </div>
+
 <script>
 const API = '/spa/api';
+const LICENSE_KEY = 'mr_license';
 let currentView = 'news';
 let entries = [];
-let subscribedFeedUrls = new Set(); // 已订阅的 URL 集合
-let allAvailableFeeds = [];          // 所有可选的源
-let otherCollections = [];
+let subscribedFeedUrls = new Set();
+let allAvailableFeeds = [];
 let rules = [];
 
-// 主题
+// ===== Theme =====
 function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('mr-theme',t);document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active',b.dataset.theme===t));}
 (function(){const s=localStorage.getItem('mr-theme')||'authoritative';document.documentElement.setAttribute('data-theme',s);})();
 
-// API
-async function api(path, data={}) {
-  const r = await fetch(`${API}/${path}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
-  return r.json();
+// ===== License =====
+function getLicense() { return localStorage.getItem(LICENSE_KEY); }
+function setLicense(code) { localStorage.setItem(LICENSE_KEY, code); }
+function clearLicense() { localStorage.removeItem(LICENSE_KEY); }
+
+async function submitLicense() {
+  const input = document.getElementById('license-input');
+  const btn = document.getElementById('license-btn');
+  const msg = document.getElementById('license-msg');
+  const code = input.value.trim();
+  if (!code) return;
+
+  btn.textContent = '验证中...';
+  btn.disabled = true;
+  msg.textContent = '';
+  input.classList.remove('error', 'success');
+
+  try {
+    const resp = await fetch(`${API}/license/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license_code: code })
+    });
+    const data = await resp.json();
+
+    if (data.valid) {
+      input.classList.add('success');
+      msg.className = 'license-msg success';
+      msg.textContent = data.message || '授权成功';
+      setLicense(code);
+      setTimeout(() => startApp(), 1000);
+    } else {
+      input.classList.add('error');
+      msg.className = 'license-msg error';
+      msg.textContent = data.message || '授权码无效';
+    }
+  } catch (e) {
+    msg.className = 'license-msg error';
+    msg.textContent = '网络错误，请稍后重试';
+  }
+
+  btn.textContent = '验证授权码';
+  btn.disabled = false;
 }
 
-// 加载所有数据
+function showLicensePage() {
+  document.getElementById('expired-overlay').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('license-page').style.display = 'flex';
+}
+
+function showExpiredOverlay() {
+  document.getElementById('expired-overlay').style.display = 'flex';
+}
+
+// ===== API =====
+async function api(path, data={}) {
+  const license = getLicense();
+  const resp = await fetch(`${API}/${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-License-Code': license || '',
+    },
+    body: JSON.stringify(data)
+  });
+
+  // Check for license errors
+  if (resp.status === 401) {
+    const errData = await resp.json();
+    if (errData.error === 'license_expired') {
+      showExpiredOverlay();
+      throw new Error('License expired');
+    }
+    if (errData.error === 'license_invalid' || errData.error === 'license_required') {
+      clearLicense();
+      showLicensePage();
+      throw new Error('License invalid');
+    }
+  }
+
+  return resp.json();
+}
+
+// ===== Data Loading =====
 async function loadAll() {
   try {
-    // 1. 获取已订阅的 feed URL 列表
-    const feedsResp = await api('private/get-feeds');
+    // Load user's subscribed feeds
+    const feedsResp = await api('license/user/feeds');
     subscribedFeedUrls = new Set((feedsResp.feeds || []).map(f => f.url));
 
-    // 2. 获取所有可用的集合和 feeds
+    // Load available feeds from collections
     const collsResp = await api('public/get-collections');
     allAvailableFeeds = [];
-    otherCollections = [];
-
     for (const coll of (collsResp.collections || [])) {
-      try {
-        const detail = await api('public/get-collection-feeds', { collectionId: coll.id });
-        const list = (detail.feeds || []).map(f => ({
-          id: f.id, url: f.url, title: f.title, description: f.description || ''
-        }));
-        if (coll.slug === 'money-radar-default') {
-          allAvailableFeeds = list;
-        } else {
-          otherCollections.push({ id: coll.id, name: coll.name, description: coll.description, slug: coll.slug, feeds: list });
-        }
-      } catch(e) {}
+      if (coll.slug === 'money-radar-default') {
+        try {
+          const detail = await api('public/get-collection-feeds', { collectionId: coll.id });
+          allAvailableFeeds = (detail.feeds || []).map(f => ({
+            id: f.id, url: f.url, title: f.title, description: f.description || ''
+          }));
+        } catch (e) {}
+        break;
+      }
     }
 
-    // 3. 获取新闻
+    // Load entries
     const entriesResp = await api('private/get-last-entries', { period: 30*24*60*60, minTagCount: 0 });
     entries = (entriesResp.entries || []).map(e => ({
       id: e.id, title: e.title, url: e.externalUrl,
       source: e.feedTitle || '未知', published: new Date(e.publishedAt),
-      score: e.score || 0, tags: (e.tags || []).map(t => t)
+      score: e.score || 0, tags: (e.tags || [])
     }));
 
-    // 4. 获取规则
-    const rulesResp = await api('private/get-rules');
-    rules = (rulesResp.rules || []).map(r => ({ id: r.id, requiredTags: r.requiredTags, excludedTags: r.excludedTags, score: r.score }));
+    // Load user's rules
+    const rulesResp = await api('license/user/rules');
+    rules = (rulesResp.rules || []).map(r => ({
+      id: r.id, requiredTags: r.requiredTags, excludedTags: r.excludedTags, score: r.score
+    }));
 
-    // 5. 更新侧边栏计数
+    // Update sidebar counts
     document.getElementById('count-all').textContent = entries.length;
     document.getElementById('count-high').textContent = entries.filter(e => e.score >= 80).length;
-
-    // 6. 渲染标签
     renderTags();
-  } catch(e) { console.error('loadAll error:', e); }
+  } catch (e) {
+    if (e.message !== 'License expired' && e.message !== 'License invalid') {
+      console.error('loadAll error:', e);
+    }
+  }
 }
 
 function renderTags() {
@@ -185,7 +341,7 @@ function timeAgo(d) {
   return Math.floor(h/24)+' 天前';
 }
 
-// 视图切换
+// ===== Views =====
 function showView(v) {
   currentView = v;
   if(v==='news') renderNews();
@@ -193,7 +349,6 @@ function showView(v) {
   else if(v==='rules') renderRules();
 }
 
-// ===== 新闻页 =====
 function renderNews() {
   const sorted = [...entries].sort((a,b) => b.score - a.score);
   document.getElementById('content').innerHTML = `
@@ -218,16 +373,13 @@ function renderNews() {
     </div>`;
 }
 
-// ===== RSS 源页 =====
 function renderFeeds() {
   const groups = {'财经金融':[],'科技互联网':[],'政策时政':[],'综合资讯':[],'国际视野':[],'加密货币':[],'其他':[]};
   const gm = {'华尔街见闻':'财经金融','财联社':'财经金融','金十数据':'财经金融','雪球':'财经金融','格隆汇':'财经金融','东方财富':'财经金融','财新网':'财经金融','36氪':'科技互联网','虎嗅':'科技互联网','少数派':'科技互联网','InfoQ':'科技互联网','Hacker News':'科技互联网','TechCrunch':'科技互联网','The Verge':'科技互联网','新华社':'政策时政','中国政府网':'政策时政','人民日报':'政策时政','知乎':'综合资讯','微博':'综合资讯','V2EX':'综合资讯','掘金':'综合资讯','IT之家':'综合资讯','今日头条':'综合资讯','BBC':'国际视野','CNN':'国际视野','路透社':'国际视野','纽约时报':'国际视野','CoinDesk':'加密货币','PANews':'加密货币'};
-
   allAvailableFeeds.forEach(f => {
     const m = Object.keys(gm).find(k => (f.title||'').includes(k));
     groups[m ? gm[m] : '其他'].push(f);
   });
-
   const subCount = allAvailableFeeds.filter(f => subscribedFeedUrls.has(f.url)).length;
 
   document.getElementById('content').innerHTML = `
@@ -249,43 +401,25 @@ function renderFeeds() {
             </div>
             ${isSub
               ? `<button class="btn-unsub" onclick="doUnsub('${f.url}')">取消订阅</button>`
-              : `<button class="btn-sub" onclick="doSub('${f.url}')">订阅</button>`}
+              : `<button class="btn-sub" onclick="doSub('${f.url}','${f.title}','${f.description}')">订阅</button>`}
           </div>`;
         }).join('')}
-      </div>`).join('')}
-    ${otherCollections.length > 0 ? `
-      <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border)">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:16px;font-weight:700;letter-spacing:1px">其他源集合</div>
-        ${otherCollections.map(c => `
-          <div style="margin-bottom:16px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <div><span style="font-weight:500">${c.name}</span><span style="font-size:12px;color:var(--text4);margin-left:8px">${c.feeds.length} 个源</span></div>
-              <button class="btn-sub" onclick="doSubCollection('${c.id}')">订阅全部</button>
-            </div>
-            <div style="font-size:12px;color:var(--text3)">${c.description}</div>
-          </div>`).join('')}
-      </div>` : ''}`;
+      </div>`).join('')}`;
 }
 
-async function doSub(url) {
-  await api('private/add-feed', {url});
+async function doSub(url, title, desc) {
+  await api('license/user/feeds/add', {url, title, description: desc});
   await loadAll();
   renderFeeds();
 }
 
 async function doUnsub(url) {
-  // 找到 feedId
-  const feedsResp = await api('private/get-feeds');
+  // Find feed ID from subscribed list
+  const feedsResp = await api('license/user/feeds');
   const feed = (feedsResp.feeds||[]).find(f => f.url === url);
   if (feed) {
-    await api('private/unsubscribe', {feedId: feed.id});
+    await api('license/user/feeds/remove', {feed_id: feed.id});
   }
-  await loadAll();
-  renderFeeds();
-}
-
-async function doSubCollection(id) {
-  await api('private/subscribe-to-collections', {collections: [id]});
   await loadAll();
   renderFeeds();
 }
@@ -294,17 +428,15 @@ async function addCustomFeed() {
   const input = document.getElementById('feed-url');
   const url = input.value.trim();
   if (!url) return;
-  await api('private/add-feed', {url});
+  await api('license/user/feeds/add', {url});
   input.value = '';
   await loadAll();
   renderFeeds();
 }
 
-// ===== 评分规则页 =====
 function renderRules() {
-  const groups = {'央行与货币政策':[],'宏观经济数据':[],'股票市场':[],'金融资产':[],'科技产业':[],'政策与监管':[],'国际与地缘':[],'创业与资本':[],'排除噪音':[],'其他':[]};
-  const rmg = {'央行':'央行与货币政策','美联储':'央行与货币政策','降息':'央行与货币政策','加息':'央行与货币政策','利率':'央行与货币政策','货币政策':'央行与货币政策','GDP':'宏观经济数据','CPI':'宏观经济数据','通胀':'宏观经济数据','宏观经济':'宏观经济数据','就业':'宏观经济数据','财政政策':'宏观经济数据','A股':'股票市场','港股':'股票市场','美股':'股票市场','股票':'股票市场','IPO':'股票市场','财报':'股票市场','债券':'金融资产','外汇':'金融资产','大宗商品':'金融资产','石油':'金融资产','黄金':'金融资产','人工智能':'科技产业','AI':'科技产业','半导体':'科技产业','芯片':'科技产业','新能源':'科技产业','电动车':'科技产业','政策':'政策与监管','国务院':'政策与监管','监管':'政策与监管','反垄断':'政策与监管','房地产':'政策与监管','贸易':'国际与地缘','关税':'国际与地缘','制裁':'国际与地缘','地缘政治':'国际与地缘','创业':'创业与资本','融资':'创业与资本'};
-
+  const groups = {'央行与货币政策':[],'宏观经济数据':[],'股票市场':[],'金融资产':[],'科技产业':[],'政策与监管':[],'国际与地缘':[],'排除噪音':[],'其他':[]};
+  const rmg = {'央行':'央行与货币政策','美联储':'央行与货币政策','降息':'央行与货币政策','加息':'央行与货币政策','利率':'央行与货币政策','货币政策':'央行与货币政策','GDP':'宏观经济数据','CPI':'宏观经济数据','通胀':'宏观经济数据','宏观经济':'宏观经济数据','就业':'宏观经济数据','财政政策':'宏观经济数据','A股':'股票市场','港股':'股票市场','美股':'股票市场','股票':'股票市场','IPO':'股票市场','财报':'股票市场','债券':'金融资产','外汇':'金融资产','大宗商品':'金融资产','石油':'金融资产','黄金':'金融资产','人工智能':'科技产业','AI':'科技产业','半导体':'科技产业','芯片':'科技产业','新能源':'科技产业','电动车':'科技产业','政策':'政策与监管','国务院':'政策与监管','监管':'政策与监管','反垄断':'政策与监管','房地产':'政策与监管','贸易':'国际与地缘','关税':'国际与地缘','制裁':'国际与地缘','地缘政治':'国际与地缘'};
   rules.forEach(r => {
     if(r.excludedTags && r.excludedTags.length>0) { groups['排除噪音'].push(r); return; }
     const tag = (r.requiredTags||[])[0]||'';
@@ -338,17 +470,45 @@ async function addRule() {
   const tag = document.getElementById('rule-tag').value.trim();
   const score = parseInt(document.getElementById('rule-score').value) || 10;
   if(!tag) return;
-  await api('private/create-or-update-rule', {requiredTags:[tag], excludedTags:[], score});
+  await api('license/user/rules/add', {required_tags: [tag], excluded_tags: [], score});
   await loadAll();
   renderRules();
 }
 
-// 初始化
-(async function() {
+// ===== Init =====
+async function startApp() {
+  document.getElementById('license-page').style.display = 'none';
+  document.getElementById('app').style.display = 'grid';
   const saved = localStorage.getItem('mr-theme')||'authoritative';
   document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active',b.dataset.theme===saved));
   await loadAll();
   showView('news');
+}
+
+// Entry point
+(async function() {
+  const license = getLicense();
+  if (!license) {
+    showLicensePage();
+    return;
+  }
+
+  // Quick validation
+  try {
+    const resp = await fetch(`${API}/license/status`, {
+      headers: { 'X-License-Code': license }
+    });
+    const data = await resp.json();
+    if (data.valid) {
+      startApp();
+    } else {
+      clearLicense();
+      showLicensePage();
+    }
+  } catch (e) {
+    // Network error, try to start anyway
+    startApp();
+  }
 })();
 </script>
 </body>
