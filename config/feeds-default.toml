@@ -1,0 +1,183 @@
+id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+slug = "money-radar-default"
+gui_order = 1
+name = "Money Radar 默认源"
+description = "预置的信息源，覆盖财经、科技、政策、综合资讯"
+show_on_main = true
+
+# ===== 财经金融 =====
+
+[[feeds]]
+  url = "http://rsshub:1200/wallstreetcn/news/global"
+  title = "华尔街见闻 · 全球快讯"
+  description = "全球财经快讯，覆盖美股、A股、港股、外汇、大宗商品、加密货币等市场动态，适合需要实时掌握全球金融市场的投资者"
+
+[[feeds]]
+  url = "http://rsshub:1200/wallstreetcn/live/global"
+  title = "华尔街见闻 · 7x24快讯"
+  description = "华尔街见闻 7x24 小时实时快讯流，第一时间推送重大财经事件、央行决议、经济数据发布等"
+
+[[feeds]]
+  url = "http://rsshub:1200/cls/telegraph"
+  title = "财联社 · 电报"
+  description = "财联社电报，A股市场最权威的实时资讯源之一，覆盖盘前、盘中、盘后全时段，机构投资者必读"
+
+[[feeds]]
+  url = "http://rsshub:1200/jin10"
+  title = "金十数据"
+  description = "全球财经数据和资讯平台，以快讯和数据图表闻名，覆盖宏观经济指标、央行政策、市场行情"
+
+[[feeds]]
+  url = "http://rsshub:1200/xueqiu/hot"
+  title = "雪球 · 热帖"
+  description = "雪球社区热门讨论帖，汇集个人投资者的观点和分析，适合了解市场情绪和散户动向"
+
+[[feeds]]
+  url = "http://rsshub:1200/gelonghui/live"
+  title = "格隆汇 · 实时快讯"
+  description = "格隆汇实时财经资讯，专注港股和美股市场，提供深度分析和实时行情"
+
+[[feeds]]
+  url = "http://rsshub:1200/eastmoney/report/strategy"
+  title = "东方财富 · 策略报告"
+  description = "东方财富发布的策略研究报告摘要，涵盖A股市场策略、行业分析、个股推荐"
+
+[[feeds]]
+  url = "http://rsshub:1200/caixin/latest"
+  title = "财新网 · 最新"
+  description = "财新网最新文章，以深度调查报道和政策解读著称，中国经济政策的权威信息源"
+
+# ===== 科技互联网 =====
+
+[[feeds]]
+  url = "http://rsshub:1200/36kr/newsflashes"
+  title = "36氪 · 快讯"
+  description = "36氪科技快讯，覆盖创投、融资、产品发布、行业动态，中国科技圈最全面的资讯源之一"
+
+[[feeds]]
+  url = "http://rsshub:1200/36kr/hot"
+  title = "36氪 · 热榜"
+  description = "36氪热门文章榜单，反映科技圈最受关注的话题和趋势"
+
+[[feeds]]
+  url = "http://rsshub:1200/huxiu/article"
+  title = "虎嗅 · 文章"
+  description = "虎嗅网深度文章，以商业分析和行业洞察见长，适合了解科技行业趋势和商业模式"
+
+[[feeds]]
+  url = "http://rsshub:1200/sspai/matrix"
+  title = "少数派 · Matrix"
+  description = "少数派 Matrix 精选文章，聚焦效率工具、数字生活、开发技术，适合技术人员和效率爱好者"
+
+[[feeds]]
+  url = "http://rsshub:1200/infoq/recommend"
+  title = "InfoQ · 推荐"
+  description = "InfoQ 技术推荐文章，面向软件开发者和架构师，涵盖云计算、AI、大数据、微服务等技术领域"
+
+[[feeds]]
+  url = "http://rsshub:1200/hackernews/best"
+  title = "Hacker News · 精选"
+  description = "Hacker News 最佳文章，全球技术社区最权威的新闻源，涵盖编程、创业、科技趋势"
+
+[[feeds]]
+  url = "http://rsshub:1200/techcrunch/news"
+  title = "TechCrunch"
+  description = "TechCrunch 科技新闻，全球科技创投领域最权威的媒体，覆盖硅谷和全球科技创业动态"
+
+[[feeds]]
+  url = "http://rsshub:1200/theverge"
+  title = "The Verge"
+  description = "The Verge 科技资讯，以消费电子、科技产品评测和科技文化报道闻名"
+
+# ===== 政策时政 =====
+
+[[feeds]]
+  url = "http://rsshub:1200/xinhuanet/news"
+  title = "新华社 · 要闻"
+  description = "新华社重要新闻，中国官方最权威的新闻源，政策发布、重大事件的第一手信息"
+
+[[feeds]]
+  url = "http://rsshub:1200/gov/zhengce"
+  title = "中国政府网 · 政策"
+  description = "国务院政策文件，所有重大政策的官方发布渠道，投资者和企业决策者必读"
+
+[[feeds]]
+  url = "http://rsshub:1200/gov/zhengce/zuixin"
+  title = "中国政府网 · 最新政策"
+  description = "最新国务院政策文件，第一时间获取政策变化和法规更新"
+
+[[feeds]]
+  url = "http://rsshub:1200/rmrb"
+  title = "人民日报"
+  description = "人民日报文章，中国最具影响力的官方媒体，反映政策方向和官方态度"
+
+# ===== 综合资讯 =====
+
+[[feeds]]
+  url = "http://rsshub:1200/zhihu/hotlist"
+  title = "知乎 · 热榜"
+  description = "知乎热榜问题，反映中文互联网最受关注的话题，涵盖社会、科技、生活等各领域"
+
+[[feeds]]
+  url = "http://rsshub:1200/zhihu/daily"
+  title = "知乎 · 日报"
+  description = "知乎日报，每日精选高质量问答和文章，适合快速了解当日热点"
+
+[[feeds]]
+  url = "http://rsshub:1200/weibo/search/hot"
+  title = "微博 · 热搜"
+  description = "微博热搜榜，中文社交媒体最实时的热点话题源，适合追踪突发事件和舆论动态"
+
+[[feeds]]
+  url = "http://rsshub:1200/v2ex/topics/hot"
+  title = "V2EX · 热门"
+  description = "V2EX 热门主题，技术社区和创意工作者的讨论区，涵盖编程、硬件、职场等话题"
+
+[[feeds]]
+  url = "http://rsshub:1200/juejin/trending/all"
+  title = "掘金 · 热门"
+  description = "掘金热门文章，中国最大的开发者社区之一，技术文章和经验分享"
+
+[[feeds]]
+  url = "http://rsshub:1200/ithome/ranking"
+  title = "IT之家 · 热榜"
+  description = "IT之家热门新闻，覆盖消费电子、软件更新、科技事件，适合科技爱好者"
+
+[[feeds]]
+  url = "http://rsshub:1200/toutiao/hot"
+  title = "今日头条 · 热点"
+  description = "今日头条热点资讯，反映大众关注度最高的新闻和话题"
+
+# ===== 国际视野 =====
+
+[[feeds]]
+  url = "http://rsshub:1200/bbc/news"
+  title = "BBC · 新闻"
+  description = "BBC 新闻，英国广播公司的全球新闻报道，国际视角，覆盖全球重大事件"
+
+[[feeds]]
+  url = "http://rsshub:1200/cnn/topstories"
+  title = "CNN · 头条"
+  description = "CNN 头条新闻，美国有线电视新闻网的头条报道，适合了解美国视角的国际新闻"
+
+[[feeds]]
+  url = "http://rsshub:1200/reuters/world"
+  title = "路透社 · 世界"
+  description = "路透社世界新闻，全球最权威的通讯社之一，以速度和准确性著称，金融市场的重要信息源"
+
+[[feeds]]
+  url = "http://rsshub:1200/nytimes"
+  title = "纽约时报"
+  description = "纽约时报，美国最具影响力的报纸，深度报道和调查新闻的标杆"
+
+# ===== 加密货币 =====
+
+[[feeds]]
+  url = "http://rsshub:1200/coindesk"
+  title = "CoinDesk"
+  description = "CoinDesk 加密货币新闻，全球最权威的区块链和加密货币媒体，覆盖比特币、以太坊及整个加密市场"
+
+[[feeds]]
+  url = "http://rsshub:1200/panewslab"
+  title = "PANews"
+  description = "PANews 区块链资讯，中文区块链媒体，提供行业分析、项目评测和市场动态"

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Radar</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* 权威主题（默认） */
+:root, [data-theme="authoritative"] {
+  --bg: #ffffff; --bg2: #fafafa; --bg3: #f5f5f5;
+  --text: #1a1a1a; --text2: #4a4a4a; --text3: #8a8a8a; --text4: #b0b0b0;
+  --accent: #c41e3a; --border: #e0e0e0; --border-heavy: #1a1a1a;
+}
+/* 墨水屏主题 */
+[data-theme="eink"] {
+  --bg: #ffffff; --bg2: #ffffff; --bg3: #f0f0f0;
+  --text: #000000; --text2: #000000; --text3: #555555; --text4: #888888;
+  --accent: #000000; --border: #000000; --border-heavy: #000000;
+}
+/* 养眼主题 */
+[data-theme="easyeyes"] {
+  --bg: #f8f6f1; --bg2: #f3f0e8; --bg3: #ebe8df;
+  --text: #3d3529; --text2: #5a5044; --text3: #8a8070; --text4: #b0a898;
+  --accent: #8b6914; --border: #d9d3c7; --border-heavy: #3d3529;
+}
+:root {
+  --serif: 'Noto Serif SC', Georgia, serif;
+  --sans: 'Noto Sans SC', -apple-system, sans-serif;
+  --mono: 'Geist Mono', 'Courier New', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 14px; }
+.app { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; max-width: 1200px; margin: 0 auto; }
+
+/* Sidebar */
+.sidebar { border-right: 1px solid var(--border); padding: 24px 16px; }
+.logo { font-family: var(--serif); font-size: 20px; font-weight: 700; padding-bottom: 16px; border-bottom: 2px solid var(--border-heavy); margin-bottom: 24px; }
+.logo span { color: var(--accent); }
+.nav-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+.nav-item { padding: 8px 12px; font-size: 13px; color: var(--text2); cursor: pointer; border-left: 2px solid transparent; display: flex; justify-content: space-between; }
+.nav-item:hover { background: var(--bg2); color: var(--text); }
+.nav-item.active { color: var(--text); font-weight: 500; border-left-color: var(--accent); }
+.nav-count { font-family: var(--mono); font-size: 11px; color: var(--text4); }
+.nav-section { margin-bottom: 24px; }
+
+/* Main */
+.main { padding: 24px 32px; }
+.header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.header h1 { font-family: var(--serif); font-size: 22px; font-weight: 700; }
+.view-tabs { display: flex; gap: 16px; font-size: 12px; }
+.view-tab { background: none; border: none; color: var(--text3); cursor: pointer; padding: 4px 0; border-bottom: 2px solid transparent; font-family: var(--sans); }
+.view-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+/* Stats */
+.stats { display: flex; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--bg3); margin-bottom: 16px; font-size: 12px; }
+.stat-val { font-family: var(--mono); font-weight: 500; }
+
+/* News list */
+.news-list { display: flex; flex-direction: column; }
+.news-item { padding: 16px 0; border-bottom: 1px solid var(--bg3); display: grid; grid-template-columns: 40px 1fr; gap: 12px; cursor: pointer; }
+.news-item:hover { background: var(--bg2); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
+.news-item:first-child { border-bottom: 2px solid var(--border-heavy); padding-bottom: 20px; margin-bottom: 8px; }
+.news-item:first-child .news-title { font-size: 20px; }
+.news-score { font-family: var(--mono); font-size: 16px; color: var(--text); padding-top: 2px; }
+.news-item:first-child .news-score { font-size: 22px; }
+.news-title { font-family: var(--serif); font-size: 15px; font-weight: 600; line-height: 1.4; }
+.news-title:hover { color: var(--accent); }
+.news-meta { font-size: 12px; color: var(--text3); margin-top: 4px; display: flex; gap: 8px; }
+.news-tags { display: flex; gap: 12px; margin-top: 6px; }
+.tag { font-size: 11px; color: var(--text3); }
+
+/* Add feed form */
+.add-feed { display: flex; gap: 8px; margin-bottom: 24px; }
+.add-feed input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-bottom: 2px solid var(--border-heavy); font-family: var(--sans); font-size: 13px; }
+.add-feed input:focus { outline: none; border-bottom-color: var(--accent); }
+.add-feed button { padding: 10px 20px; background: var(--text); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; cursor: pointer; }
+
+/* Empty state */
+.empty { text-align: center; padding: 48px 0; color: var(--text3); }
+.empty h3 { font-family: var(--serif); font-size: 18px; color: var(--text2); margin-bottom: 8px; }
+
+/* Loading */
+.loading { text-align: center; padding: 24px; color: var(--text3); font-size: 13px; }
+
+/* Rules */
+.rule { padding: 12px 0; border-bottom: 1px solid var(--bg3); display: flex; justify-content: space-between; align-items: center; }
+.rule-tags { font-size: 13px; }
+.rule-score { font-family: var(--mono); font-size: 14px; color: var(--accent); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 16px; }
+}
+
+/* Theme picker */
+.theme-picker { display: flex; flex-direction: column; gap: 4px; }
+.theme-btn { background: none; border: 1px solid var(--border); padding: 6px 10px; font-size: 12px; cursor: pointer; text-align: left; font-family: var(--sans); color: var(--text2); border-left: 2px solid transparent; }
+.theme-btn:hover { background: var(--bg2); }
+.theme-btn.active { border-left-color: var(--accent); color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">Money<span>Radar</span></div>
+    <div class="nav-section">
+      <div class="nav-label">资讯</div>
+      <div class="nav-item active" onclick="showView('news')">全部 <span class="nav-count" id="count-all">0</span></div>
+      <div class="nav-item" onclick="showView('news')">高分 <span class="nav-count" id="count-high">0</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">标签</div>
+      <div id="tag-list"></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">主题</div>
+      <div class="theme-picker">
+        <button class="theme-btn active" data-theme="authoritative" onclick="setTheme('authoritative')">📰 权威</button>
+        <button class="theme-btn" data-theme="eink" onclick="setTheme('eink')">📖 墨水屏</button>
+        <button class="theme-btn" data-theme="easyeyes" onclick="setTheme('easyeyes')">🌅 养眼</button>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">管理</div>
+      <div class="nav-item" onclick="showView('feeds')">RSS 源</div>
+      <div class="nav-item" onclick="showView('rules')">评分规则</div>
+    </div>
+  </aside>
+  <main class="main" id="content">
+    <div class="loading">加载中...</div>
+  </main>
+</div>
+
+<script>
+const API = '/spa/api';
+let currentView = 'news';
+let entries = [];
+let feeds = [];
+let rules = [];
+let tags = {};
+let collections = [];
+
+// 主题切换
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('mr-theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+}
+(function() {
+  const saved = localStorage.getItem('mr-theme') || 'authoritative';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+async function api(path, data = {}) {
+  const resp = await fetch(`${API}/${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return resp.json();
+}
+
+async function loadData() {
+  try {
+    const info = await api('public/get-info');
+
+    // 加载集合
+    const collsResp = await api('public/get-collections');
+    collections = (collsResp.collections || []);
+
+    // 自动订阅 Money Radar 默认源
+    const defaultColl = collections.find(c => c.slug === 'money-radar-default');
+    if (defaultColl) {
+      try {
+        await api('private/subscribe-to-collections', { collectionsIds: [defaultColl.id] });
+      } catch (e) { /* 已订阅则忽略 */ }
+    }
+
+    const entriesResp = await api('private/get-last-entries', { period: 7 * 24 * 60 * 60, minTagCount: 0 });
+    entries = (entriesResp.entries || []).map(e => ({
+      id: e.id,
+      title: e.title,
+      url: e.externalUrl,
+      source: e.feedTitle || '未知',
+      published: new Date(e.publishedAt),
+      score: e.score || 0,
+      tags: (e.tags || []).map(t => tags[t]?.name || t),
+      read: e.marker === 'read'
+    }));
+    document.getElementById('count-all').textContent = entries.length;
+    document.getElementById('count-high').textContent = entries.filter(e => e.score >= 80).length;
+
+    const tagsResp = await api('public/get-tags-info', { uids: Object.keys(tags) });
+    if (tagsResp.tags) {
+      for (const [uid, info] of Object.entries(tagsResp.tags)) {
+        tags[uid] = { name: info.name || uid, count: info.entriesCount || 0 };
+      }
+    }
+    renderTagList();
+  } catch (e) {
+    console.error('Load error:', e);
+  }
+}
+
+function renderTagList() {
+  const el = document.getElementById('tag-list');
+  const sorted = Object.entries(tags).sort((a, b) => (b[1].count || 0) - (a[1].count || 0)).slice(0, 10);
+  el.innerHTML = sorted.map(([uid, t]) =>
+    `<div class="nav-item"><span>#${t.name}</span><span class="nav-count">${t.count}</span></div>`
+  ).join('');
+}
+
+function timeAgo(date) {
+  const mins = Math.floor((Date.now() - date) / 60000);
+  if (mins < 1) return '刚刚';
+  if (mins < 60) return `${mins} 分钟前`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} 小时前`;
+  return `${Math.floor(hours / 24)} 天前`;
+}
+
+function showView(view) {
+  currentView = view;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const content = document.getElementById('content');
+
+  if (view === 'news') {
+    renderNews();
+  } else if (view === 'feeds') {
+    renderFeeds();
+  } else if (view === 'rules') {
+    renderRules();
+  }
+}
+
+function renderNews() {
+  const content = document.getElementById('content');
+  const sorted = [...entries].sort((a, b) => b.score - a.score);
+  content.innerHTML = `
+    <div class="header">
+      <h1>全部资讯</h1>
+      <div class="view-tabs">
+        <button class="view-tab active">评分</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div>今日 <span class="stat-val">${entries.length}</span></div>
+      <div>高分 <span class="stat-val">${entries.filter(e => e.score >= 80).length}</span></div>
+      <div>源 <span class="stat-val">${feeds.length}</span></div>
+    </div>
+    <div class="news-list">
+      ${sorted.length === 0 ? '<div class="empty"><h3>还没有资讯</h3><p>添加 RSS 源开始接收资讯</p></div>' : ''}
+      ${sorted.map(e => `
+        <div class="news-item" onclick="window.open('${e.url}', '_blank')">
+          <div class="news-score">${e.score}</div>
+          <div>
+            <div class="news-title">${e.title}</div>
+            <div class="news-tags">${e.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>
+            <div class="news-meta"><span>${e.source}</span><span>${timeAgo(e.published)}</span></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderFeeds() {
+  const content = document.getElementById('content');
+
+  // 按分组归类
+  const groups = {
+    '财经金融': [],
+    '科技互联网': [],
+    '政策时政': [],
+    '综合资讯': [],
+    '国际视野': [],
+    '加密货币': [],
+    '其他': []
+  };
+
+  const groupMap = {
+    '华尔街见闻': '财经金融', '财联社': '财经金融', '金十数据': '财经金融',
+    '雪球': '财经金融', '格隆汇': '财经金融', '东方财富': '财经金融', '财新网': '财经金融',
+    '36氪': '科技互联网', '虎嗅': '科技互联网', '少数派': '科技互联网',
+    'InfoQ': '科技互联网', 'Hacker News': '科技互联网', 'TechCrunch': '科技互联网', 'The Verge': '科技互联网',
+    '新华社': '政策时政', '中国政府网': '政策时政', '人民日报': '政策时政',
+    '知乎': '综合资讯', '微博': '综合资讯', 'V2EX': '综合资讯',
+    '掘金': '综合资讯', 'IT之家': '综合资讯', '今日头条': '综合资讯',
+    'BBC': '国际视野', 'CNN': '国际视野', '路透社': '国际视野', '纽约时报': '国际视野',
+    'CoinDesk': '加密货币', 'PANews': '加密货币'
+  };
+
+  feeds.forEach(f => {
+    const matched = Object.keys(groupMap).find(k => (f.title || '').includes(k));
+    const group = matched ? groupMap[matched] : '其他';
+    groups[group].push(f);
+  });
+
+  content.innerHTML = `
+    <div class="header"><h1>RSS 源管理</h1></div>
+    <div class="add-feed">
+      <input type="text" id="feed-url" placeholder="输入 RSS 地址，如 http://14.103.53.49:1200/wallstreetcn/news/global">
+      <button onclick="addFeed()">添加</button>
+    </div>
+    ${collections.length > 0 ? `
+      <div style="margin-bottom:24px">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px">预置源集合（${feeds.length} 个源已订阅）</div>
+        ${collections.filter(c => c.slug !== 'feeds-fun').map(c => `
+          <div class="rule">
+            <div>
+              <div style="font-weight:500">${c.name}</div>
+              <div style="font-size:12px;color:var(--text3)">${c.description} · ${c.feedsNumber} 个源</div>
+            </div>
+            <button style="background:var(--text);color:var(--bg);border:none;padding:4px 12px;cursor:pointer;font-size:12px" onclick="subscribeCollection('${c.id}')">订阅全部</button>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+    ${Object.entries(groups).filter(([, items]) => items.length > 0).map(([group, items]) => `
+      <div style="margin-bottom:20px">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px">${group}（${items.length}）</div>
+        ${items.map(f => `
+          <div class="rule">
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:500">${f.title || f.url}</div>
+              <div style="font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.description || f.url}</div>
+            </div>
+            <button style="background:none;border:1px solid var(--border);padding:4px 12px;cursor:pointer;font-size:12px;flex-shrink:0" onclick="removeFeed('${f.id}')">移除</button>
+          </div>
+        `).join('')}
+      </div>
+    `).join('')}
+    ${feeds.length === 0 ? '<div class="empty"><h3>还没有订阅源</h3><p>订阅上方的预置源集合，或手动添加 RSS 地址</p></div>' : ''}
+  `;
+}
+
+async function subscribeCollection(id) {
+  await api('private/subscribe-to-collections', { collectionsIds: [id] });
+  await loadFeeds();
+  await loadData();
+  renderFeeds();
+}
+
+async function addFeed() {
+  const input = document.getElementById('feed-url');
+  const url = input.value.trim();
+  if (!url) return;
+  try {
+    const resp = await api('private/add-feed', { url });
+    if (resp.feed) {
+      feeds.push({ id: resp.feed.id, url: resp.feed.url, title: resp.feed.title });
+      input.value = '';
+      renderFeeds();
+    }
+  } catch (e) {
+    alert('添加失败：' + e.message);
+  }
+}
+
+async function removeFeed(id) {
+  await api('private/unsubscribe', { feedId: id });
+  feeds = feeds.filter(f => f.id !== id);
+  renderFeeds();
+}
+
+function renderRules() {
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="header"><h1>评分规则</h1></div>
+    <div class="add-feed">
+      <input type="text" id="rule-tag" placeholder="标签名，如 央行">
+      <input type="number" id="rule-score" placeholder="分数" value="10" style="width:80px">
+      <button onclick="addRule()">添加</button>
+    </div>
+    <div id="rule-list">
+      ${rules.length === 0 ? '<div class="empty"><h3>还没有评分规则</h3><p>添加规则让 AI 知道你关注什么</p></div>' : ''}
+      ${rules.map(r => `
+        <div class="rule">
+          <div class="rule-tags">${(r.requiredTags || []).map(t => `<span class="tag">#${t}</span>`).join(' ')}</div>
+          <div class="rule-score">+${r.score}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function addRule() {
+  const tag = document.getElementById('rule-tag').value.trim();
+  const score = parseInt(document.getElementById('rule-score').value) || 10;
+  if (!tag) return;
+  await api('private/create-or-update-rule', { requiredTags: [tag], excludedTags: [], score });
+  rules.push({ requiredTags: [tag], score });
+  renderRules();
+}
+
+async function loadFeeds() {
+  try {
+    const resp = await api('private/get-feeds');
+    feeds = (resp.feeds || []).map(f => ({ id: f.id, url: f.url, title: f.title, description: f.description || '' }));
+  } catch (e) { console.error(e); }
+}
+
+async function loadRules() {
+  try {
+    const resp = await api('private/get-rules');
+    rules = (resp.rules || []).map(r => ({ id: r.id, requiredTags: r.requiredTags, score: r.score }));
+  } catch (e) { console.error(e); }
+}
+
+async function init() {
+  // 初始化主题按钮状态
+  const saved = localStorage.getItem('mr-theme') || 'authoritative';
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === saved));
+  await loadData();
+  await loadFeeds();
+  await loadRules();
+  showView('news');
+}
+
+init();
+</script>
+</body>
+</html>
