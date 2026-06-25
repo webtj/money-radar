@@ -142,6 +142,7 @@ let feeds = [];
 let rules = [];
 let tags = {};
 let collections = [];
+let allCollectionFeeds = [];
 
 // 主题切换
 function setTheme(theme) {
@@ -167,19 +168,29 @@ async function loadData() {
   try {
     const info = await api('public/get-info');
 
-    // 加载集合
+    // 加载集合（获取所有可用源）
     const collsResp = await api('public/get-collections');
     collections = (collsResp.collections || []);
 
-    // 自动订阅 Money Radar 默认源
-    const defaultColl = collections.find(c => c.slug === 'money-radar-default');
-    if (defaultColl) {
+    // 获取集合详情（包含每个 feed）
+    allCollectionFeeds = [];
+    for (const coll of collections) {
       try {
-        await api('private/subscribe-to-collections', { collectionsIds: [defaultColl.id] });
-      } catch (e) { /* 已订阅则忽略 */ }
+        const detail = await api('public/get-collection-feeds', { collectionId: coll.id });
+        (detail.feeds || []).forEach(f => {
+          allCollectionFeeds.push({
+            id: f.id,
+            url: f.url,
+            title: f.title,
+            description: f.description || '',
+            collectionId: coll.id,
+            subscribed: false
+          });
+        });
+      } catch (e) { /* skip */ }
     }
 
-    const entriesResp = await api('private/get-last-entries', { period: 7 * 24 * 60 * 60, minTagCount: 0 });
+    const entriesResp = await api('private/get-last-entries', { period: 30 * 24 * 60 * 60, minTagCount: 0 });
     entries = (entriesResp.entries || []).map(e => ({
       id: e.id,
       title: e.title,
@@ -293,52 +304,51 @@ function renderFeeds() {
     'CoinDesk': '加密货币', 'PANews': '加密货币'
   };
 
-  feeds.forEach(f => {
+  allCollectionFeeds.forEach(f => {
     const matched = Object.keys(groupMap).find(k => (f.title || '').includes(k));
     const group = matched ? groupMap[matched] : '其他';
     groups[group].push(f);
   });
 
+  const subscribedCount = allCollectionFeeds.filter(f => f.subscribed).length;
+  const totalCount = allCollectionFeeds.length;
+
   content.innerHTML = `
     <div class="header"><h1>RSS 源管理</h1></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">共 ${totalCount} 个源，已订阅 ${subscribedCount} 个。点击「订阅」添加感兴趣的源。</div>
     <div class="add-feed">
-      <input type="text" id="feed-url" placeholder="输入 RSS 地址，如 http://14.103.53.49:1200/wallstreetcn/news/global">
+      <input type="text" id="feed-url" placeholder="输入自定义 RSS 地址">
       <button onclick="addFeed()">添加</button>
     </div>
-    ${collections.length > 0 ? `
-      <div style="margin-bottom:24px">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px">预置源集合（${feeds.length} 个源已订阅）</div>
-        ${collections.filter(c => c.slug !== 'feeds-fun').map(c => `
-          <div class="rule">
-            <div>
-              <div style="font-weight:500">${c.name}</div>
-              <div style="font-size:12px;color:var(--text3)">${c.description} · ${c.feedsNumber} 个源</div>
-            </div>
-            <button style="background:var(--text);color:var(--bg);border:none;padding:4px 12px;cursor:pointer;font-size:12px" onclick="subscribeCollection('${c.id}')">订阅全部</button>
-          </div>
-        `).join('')}
-      </div>
-    ` : ''}
     ${Object.entries(groups).filter(([, items]) => items.length > 0).map(([group, items]) => `
       <div style="margin-bottom:20px">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px">${group}（${items.length}）</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;letter-spacing:1px">${group}（${items.length}）</div>
         ${items.map(f => `
           <div class="rule">
             <div style="flex:1;min-width:0">
-              <div style="font-weight:500">${f.title || f.url}</div>
-              <div style="font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.description || f.url}</div>
+              <div style="font-weight:500">${f.title}</div>
+              <div style="font-size:12px;color:var(--text3);line-height:1.4;margin-top:2px">${f.description}</div>
             </div>
-            <button style="background:none;border:1px solid var(--border);padding:4px 12px;cursor:pointer;font-size:12px;flex-shrink:0" onclick="removeFeed('${f.id}')">移除</button>
+            ${f.subscribed
+              ? `<button style="background:none;border:1px solid var(--border);padding:4px 12px;cursor:pointer;font-size:12px;flex-shrink:0;color:var(--text3)" onclick="unsubscribeFeed('${f.id}')">取消订阅</button>`
+              : `<button style="background:var(--text);color:var(--bg);border:none;padding:4px 12px;cursor:pointer;font-size:12px;flex-shrink:0" onclick="subscribeFeed('${f.url}')">订阅</button>`
+            }
           </div>
         `).join('')}
       </div>
     `).join('')}
-    ${feeds.length === 0 ? '<div class="empty"><h3>还没有订阅源</h3><p>订阅上方的预置源集合，或手动添加 RSS 地址</p></div>' : ''}
   `;
 }
 
-async function subscribeCollection(id) {
-  await api('private/subscribe-to-collections', { collectionsIds: [id] });
+async function subscribeFeed(url) {
+  await api('private/add-feed', { url: url });
+  await loadFeeds();
+  await loadData();
+  renderFeeds();
+}
+
+async function unsubscribeFeed(id) {
+  await api('private/unsubscribe', { feedId: id });
   await loadFeeds();
   await loadData();
   renderFeeds();
@@ -349,12 +359,11 @@ async function addFeed() {
   const url = input.value.trim();
   if (!url) return;
   try {
-    const resp = await api('private/add-feed', { url });
-    if (resp.feed) {
-      feeds.push({ id: resp.feed.id, url: resp.feed.url, title: resp.feed.title });
-      input.value = '';
-      renderFeeds();
-    }
+    await api('private/add-feed', { url: url });
+    input.value = '';
+    await loadFeeds();
+    await loadData();
+    renderFeeds();
   } catch (e) {
     alert('添加失败：' + e.message);
   }
@@ -362,28 +371,83 @@ async function addFeed() {
 
 async function removeFeed(id) {
   await api('private/unsubscribe', { feedId: id });
-  feeds = feeds.filter(f => f.id !== id);
+  await loadFeeds();
+  await loadData();
   renderFeeds();
 }
 
 function renderRules() {
   const content = document.getElementById('content');
+
+  // 按分组归类
+  const groups = {
+    '央行与货币政策': [],
+    '宏观经济数据': [],
+    '股票市场': [],
+    '金融资产': [],
+    '科技产业': [],
+    '政策与监管': [],
+    '国际与地缘': [],
+    '创业与资本': [],
+    '排除噪音': [],
+    '其他': []
+  };
+
+  const ruleGroupMap = {
+    '央行': '央行与货币政策', '美联储': '央行与货币政策', '降息': '央行与货币政策',
+    '加息': '央行与货币政策', '利率': '央行与货币政策', '货币政策': '央行与货币政策',
+    'GDP': '宏观经济数据', 'CPI': '宏观经济数据', '通胀': '宏观经济数据',
+    '宏观经济': '宏观经济数据', '就业': '宏观经济数据', '财政政策': '宏观经济数据',
+    'A股': '股票市场', '港股': '股票市场', '美股': '股票市场',
+    '股票': '股票市场', 'IPO': '股票市场', '财报': '股票市场',
+    '债券': '金融资产', '外汇': '金融资产', '大宗商品': '金融资产',
+    '石油': '金融资产', '黄金': '金融资产',
+    '人工智能': '科技产业', 'AI': '科技产业', '半导体': '科技产业',
+    '芯片': '科技产业', '新能源': '科技产业', '电动车': '科技产业',
+    '政策': '政策与监管', '国务院': '政策与监管', '监管': '政策与监管',
+    '反垄断': '政策与监管', '房地产': '政策与监管',
+    '贸易': '国际与地缘', '关税': '国际与地缘', '制裁': '国际与地缘',
+    '地缘政治': '国际与地缘',
+    '创业': '创业与资本', '融资': '创业与资本',
+  };
+
+  rules.forEach(r => {
+    if (r.excludedTags && r.excludedTags.length > 0) {
+      groups['排除噪音'].push(r);
+    } else {
+      const tag = (r.requiredTags || [])[0] || '';
+      const matched = Object.keys(ruleGroupMap).find(k => tag.includes(k));
+      const group = matched ? ruleGroupMap[matched] : '其他';
+      groups[group].push(r);
+    }
+  });
+
   content.innerHTML = `
     <div class="header"><h1>评分规则</h1></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">分数越高，AI 认为越重要的资讯会排在前面。排除规则会过滤掉不需要的内容。</div>
     <div class="add-feed">
       <input type="text" id="rule-tag" placeholder="标签名，如 央行">
       <input type="number" id="rule-score" placeholder="分数" value="10" style="width:80px">
       <button onclick="addRule()">添加</button>
     </div>
-    <div id="rule-list">
-      ${rules.length === 0 ? '<div class="empty"><h3>还没有评分规则</h3><p>添加规则让 AI 知道你关注什么</p></div>' : ''}
-      ${rules.map(r => `
-        <div class="rule">
-          <div class="rule-tags">${(r.requiredTags || []).map(t => `<span class="tag">#${t}</span>`).join(' ')}</div>
-          <div class="rule-score">+${r.score}</div>
-        </div>
-      `).join('')}
-    </div>
+    ${Object.entries(groups).filter(([, items]) => items.length > 0).map(([group, items]) => `
+      <div style="margin-bottom:20px">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;letter-spacing:1px">${group}（${items.length}）</div>
+        ${items.map(r => {
+          const isExclude = r.excludedTags && r.excludedTags.length > 0;
+          const tags = isExclude ? r.excludedTags : (r.requiredTags || []);
+          const label = isExclude ? '排除' : `+${r.score}`;
+          const color = isExclude ? 'var(--text3)' : 'var(--accent)';
+          return `
+            <div class="rule">
+              <div class="rule-tags">${tags.map(t => `<span class="tag">#${t}</span>`).join(' ')}</div>
+              <div class="rule-score" style="color:${color}">${label}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `).join('')}
+    ${rules.length === 0 ? '<div class="empty"><h3>还没有评分规则</h3><p>添加规则让 AI 知道你关注什么</p></div>' : ''}
   `;
 }
 
@@ -400,6 +464,12 @@ async function loadFeeds() {
   try {
     const resp = await api('private/get-feeds');
     feeds = (resp.feeds || []).map(f => ({ id: f.id, url: f.url, title: f.title, description: f.description || '' }));
+
+    // 标记已订阅的源
+    const subscribedUrls = new Set(feeds.map(f => f.url));
+    allCollectionFeeds.forEach(f => {
+      f.subscribed = subscribedUrls.has(f.url);
+    });
   } catch (e) { console.error(e); }
 }
 
