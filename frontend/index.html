@@ -6,19 +6,16 @@
 <title>Money Radar</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* 权威主题（默认） */
 :root, [data-theme="authoritative"] {
   --bg: #ffffff; --bg2: #fafafa; --bg3: #f5f5f5;
   --text: #1a1a1a; --text2: #4a4a4a; --text3: #8a8a8a; --text4: #b0b0b0;
   --accent: #c41e3a; --border: #e0e0e0; --border-heavy: #1a1a1a;
 }
-/* 墨水屏主题 */
 [data-theme="eink"] {
   --bg: #ffffff; --bg2: #ffffff; --bg3: #f0f0f0;
   --text: #000000; --text2: #000000; --text3: #555555; --text4: #888888;
   --accent: #000000; --border: #000000; --border-heavy: #000000;
 }
-/* 养眼主题 */
 [data-theme="easyeyes"] {
   --bg: #f8f6f1; --bg2: #f3f0e8; --bg3: #ebe8df;
   --text: #3d3529; --text2: #5a5044; --text3: #8a8070; --text4: #b0a898;
@@ -32,8 +29,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 14px; }
 .app { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; max-width: 1200px; margin: 0 auto; }
-
-/* Sidebar */
 .sidebar { border-right: 1px solid var(--border); padding: 24px 16px; }
 .logo { font-family: var(--serif); font-size: 20px; font-weight: 700; padding-bottom: 16px; border-bottom: 2px solid var(--border-heavy); margin-bottom: 24px; }
 .logo span { color: var(--accent); }
@@ -43,20 +38,11 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 .nav-item.active { color: var(--text); font-weight: 500; border-left-color: var(--accent); }
 .nav-count { font-family: var(--mono); font-size: 11px; color: var(--text4); }
 .nav-section { margin-bottom: 24px; }
-
-/* Main */
 .main { padding: 24px 32px; }
 .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
 .header h1 { font-family: var(--serif); font-size: 22px; font-weight: 700; }
-.view-tabs { display: flex; gap: 16px; font-size: 12px; }
-.view-tab { background: none; border: none; color: var(--text3); cursor: pointer; padding: 4px 0; border-bottom: 2px solid transparent; font-family: var(--sans); }
-.view-tab.active { color: var(--text); border-bottom-color: var(--accent); }
-
-/* Stats */
 .stats { display: flex; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--bg3); margin-bottom: 16px; font-size: 12px; }
 .stat-val { font-family: var(--mono); font-weight: 500; }
-
-/* News list */
 .news-list { display: flex; flex-direction: column; }
 .news-item { padding: 16px 0; border-bottom: 1px solid var(--bg3); display: grid; grid-template-columns: 40px 1fr; gap: 12px; cursor: pointer; }
 .news-item:hover { background: var(--bg2); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
@@ -69,33 +55,19 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 .news-meta { font-size: 12px; color: var(--text3); margin-top: 4px; display: flex; gap: 8px; }
 .news-tags { display: flex; gap: 12px; margin-top: 6px; }
 .tag { font-size: 11px; color: var(--text3); }
-
-/* Add feed form */
 .add-feed { display: flex; gap: 8px; margin-bottom: 24px; }
 .add-feed input { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-bottom: 2px solid var(--border-heavy); font-family: var(--sans); font-size: 13px; }
 .add-feed input:focus { outline: none; border-bottom-color: var(--accent); }
 .add-feed button { padding: 10px 20px; background: var(--text); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; cursor: pointer; }
-
-/* Empty state */
 .empty { text-align: center; padding: 48px 0; color: var(--text3); }
 .empty h3 { font-family: var(--serif); font-size: 18px; color: var(--text2); margin-bottom: 8px; }
-
-/* Loading */
 .loading { text-align: center; padding: 24px; color: var(--text3); font-size: 13px; }
-
-/* Rules */
 .rule { padding: 12px 0; border-bottom: 1px solid var(--bg3); display: flex; justify-content: space-between; align-items: center; }
 .rule-tags { font-size: 13px; }
 .rule-score { font-family: var(--mono); font-size: 14px; color: var(--accent); }
-
-/* Responsive */
-@media (max-width: 768px) {
-  .app { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
-  .main { padding: 16px; }
-}
-
-/* Theme picker */
+.btn-sub { background: var(--text); color: var(--bg); border: none; padding: 4px 12px; cursor: pointer; font-size: 12px; flex-shrink: 0; font-family: var(--sans); }
+.btn-unsub { background: none; border: 1px solid var(--border); padding: 4px 12px; cursor: pointer; font-size: 12px; flex-shrink: 0; color: var(--text3); font-family: var(--sans); }
+@media (max-width: 768px) { .app { grid-template-columns: 1fr; } .sidebar { display: none; } .main { padding: 16px; } }
 .theme-picker { display: flex; flex-direction: column; gap: 4px; }
 .theme-btn { background: none; border: 1px solid var(--border); padding: 6px 10px; font-size: 12px; cursor: pointer; text-align: left; font-family: var(--sans); color: var(--text2); border-left: 2px solid transparent; }
 .theme-btn:hover { background: var(--bg2); }
@@ -129,368 +101,255 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
       <div class="nav-item" onclick="showView('rules')">评分规则</div>
     </div>
   </aside>
-  <main class="main" id="content">
-    <div class="loading">加载中...</div>
-  </main>
+  <main class="main" id="content"><div class="loading">加载中...</div></main>
 </div>
-
 <script>
 const API = '/spa/api';
 let currentView = 'news';
 let entries = [];
-let feeds = [];
+let subscribedFeedUrls = new Set(); // 已订阅的 URL 集合
+let allAvailableFeeds = [];          // 所有可选的源
+let otherCollections = [];
 let rules = [];
-let tags = {};
-let collections = [];
-let allCollectionFeeds = [];
 
-// 主题切换
-function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('mr-theme', theme);
-  document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
-}
-(function() {
-  const saved = localStorage.getItem('mr-theme') || 'authoritative';
-  document.documentElement.setAttribute('data-theme', saved);
-})();
+// 主题
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('mr-theme',t);document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active',b.dataset.theme===t));}
+(function(){const s=localStorage.getItem('mr-theme')||'authoritative';document.documentElement.setAttribute('data-theme',s);})();
 
-async function api(path, data = {}) {
-  const resp = await fetch(`${API}/${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  return resp.json();
+// API
+async function api(path, data={}) {
+  const r = await fetch(`${API}/${path}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+  return r.json();
 }
 
-async function loadData() {
+// 加载所有数据
+async function loadAll() {
   try {
-    const info = await api('public/get-info');
+    // 1. 获取已订阅的 feed URL 列表
+    const feedsResp = await api('private/get-feeds');
+    subscribedFeedUrls = new Set((feedsResp.feeds || []).map(f => f.url));
 
-    // 加载集合（获取所有可用源）
+    // 2. 获取所有可用的集合和 feeds
     const collsResp = await api('public/get-collections');
-    collections = (collsResp.collections || []);
+    allAvailableFeeds = [];
+    otherCollections = [];
 
-    // 获取集合详情（包含每个 feed）
-    allCollectionFeeds = [];
-    for (const coll of collections) {
+    for (const coll of (collsResp.collections || [])) {
       try {
         const detail = await api('public/get-collection-feeds', { collectionId: coll.id });
-        (detail.feeds || []).forEach(f => {
-          allCollectionFeeds.push({
-            id: f.id,
-            url: f.url,
-            title: f.title,
-            description: f.description || '',
-            collectionId: coll.id,
-            subscribed: false
-          });
-        });
-      } catch (e) { /* skip */ }
+        const list = (detail.feeds || []).map(f => ({
+          id: f.id, url: f.url, title: f.title, description: f.description || ''
+        }));
+        if (coll.slug === 'money-radar-default') {
+          allAvailableFeeds = list;
+        } else {
+          otherCollections.push({ id: coll.id, name: coll.name, description: coll.description, slug: coll.slug, feeds: list });
+        }
+      } catch(e) {}
     }
 
-    const entriesResp = await api('private/get-last-entries', { period: 30 * 24 * 60 * 60, minTagCount: 0 });
+    // 3. 获取新闻
+    const entriesResp = await api('private/get-last-entries', { period: 30*24*60*60, minTagCount: 0 });
     entries = (entriesResp.entries || []).map(e => ({
-      id: e.id,
-      title: e.title,
-      url: e.externalUrl,
-      source: e.feedTitle || '未知',
-      published: new Date(e.publishedAt),
-      score: e.score || 0,
-      tags: (e.tags || []).map(t => tags[t]?.name || t),
-      read: e.marker === 'read'
+      id: e.id, title: e.title, url: e.externalUrl,
+      source: e.feedTitle || '未知', published: new Date(e.publishedAt),
+      score: e.score || 0, tags: (e.tags || []).map(t => t)
     }));
+
+    // 4. 获取规则
+    const rulesResp = await api('private/get-rules');
+    rules = (rulesResp.rules || []).map(r => ({ id: r.id, requiredTags: r.requiredTags, excludedTags: r.excludedTags, score: r.score }));
+
+    // 5. 更新侧边栏计数
     document.getElementById('count-all').textContent = entries.length;
     document.getElementById('count-high').textContent = entries.filter(e => e.score >= 80).length;
 
-    const tagsResp = await api('public/get-tags-info', { uids: Object.keys(tags) });
-    if (tagsResp.tags) {
-      for (const [uid, info] of Object.entries(tagsResp.tags)) {
-        tags[uid] = { name: info.name || uid, count: info.entriesCount || 0 };
-      }
-    }
-    renderTagList();
-  } catch (e) {
-    console.error('Load error:', e);
-  }
+    // 6. 渲染标签
+    renderTags();
+  } catch(e) { console.error('loadAll error:', e); }
 }
 
-function renderTagList() {
-  const el = document.getElementById('tag-list');
-  const sorted = Object.entries(tags).sort((a, b) => (b[1].count || 0) - (a[1].count || 0)).slice(0, 10);
-  el.innerHTML = sorted.map(([uid, t]) =>
-    `<div class="nav-item"><span>#${t.name}</span><span class="nav-count">${t.count}</span></div>`
+function renderTags() {
+  const tagCounts = {};
+  entries.forEach(e => (e.tags || []).forEach(t => { tagCounts[t] = (tagCounts[t]||0)+1; }));
+  const sorted = Object.entries(tagCounts).sort((a,b) => b[1]-a[1]).slice(0,10);
+  document.getElementById('tag-list').innerHTML = sorted.map(([t,c]) =>
+    `<div class="nav-item"><span>#${t}</span><span class="nav-count">${c}</span></div>`
   ).join('');
 }
 
-function timeAgo(date) {
-  const mins = Math.floor((Date.now() - date) / 60000);
-  if (mins < 1) return '刚刚';
-  if (mins < 60) return `${mins} 分钟前`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} 小时前`;
-  return `${Math.floor(hours / 24)} 天前`;
+function timeAgo(d) {
+  const m = Math.floor((Date.now()-d)/60000);
+  if(m<1) return '刚刚'; if(m<60) return m+' 分钟前';
+  const h=Math.floor(m/60); if(h<24) return h+' 小时前';
+  return Math.floor(h/24)+' 天前';
 }
 
-function showView(view) {
-  currentView = view;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const content = document.getElementById('content');
-
-  if (view === 'news') {
-    renderNews();
-  } else if (view === 'feeds') {
-    renderFeeds();
-  } else if (view === 'rules') {
-    renderRules();
-  }
+// 视图切换
+function showView(v) {
+  currentView = v;
+  if(v==='news') renderNews();
+  else if(v==='feeds') renderFeeds();
+  else if(v==='rules') renderRules();
 }
 
+// ===== 新闻页 =====
 function renderNews() {
-  const content = document.getElementById('content');
-  const sorted = [...entries].sort((a, b) => b.score - a.score);
-  content.innerHTML = `
-    <div class="header">
-      <h1>全部资讯</h1>
-      <div class="view-tabs">
-        <button class="view-tab active">评分</button>
-      </div>
-    </div>
+  const sorted = [...entries].sort((a,b) => b.score - a.score);
+  document.getElementById('content').innerHTML = `
+    <div class="header"><h1>全部资讯</h1></div>
     <div class="stats">
       <div>今日 <span class="stat-val">${entries.length}</span></div>
-      <div>高分 <span class="stat-val">${entries.filter(e => e.score >= 80).length}</span></div>
-      <div>源 <span class="stat-val">${feeds.length}</span></div>
+      <div>高分 <span class="stat-val">${entries.filter(e=>e.score>=80).length}</span></div>
+      <div>源 <span class="stat-val">${subscribedFeedUrls.size}</span></div>
     </div>
     <div class="news-list">
-      ${sorted.length === 0 ? '<div class="empty"><h3>还没有资讯</h3><p>添加 RSS 源开始接收资讯</p></div>' : ''}
+      ${sorted.length===0 ? '<div class="empty"><h3>还没有资讯</h3><p>去 RSS 源页面订阅一些源开始</p></div>' : ''}
       ${sorted.map(e => `
-        <div class="news-item" onclick="window.open('${e.url}', '_blank')">
+        <div class="news-item" onclick="window.open('${e.url}','_blank')">
           <div class="news-score">${e.score}</div>
           <div>
             <div class="news-title">${e.title}</div>
-            <div class="news-tags">${e.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>
+            <div class="news-tags">${(e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}</div>
             <div class="news-meta"><span>${e.source}</span><span>${timeAgo(e.published)}</span></div>
           </div>
         </div>
       `).join('')}
-    </div>
-  `;
+    </div>`;
 }
 
+// ===== RSS 源页 =====
 function renderFeeds() {
-  const content = document.getElementById('content');
+  const groups = {'财经金融':[],'科技互联网':[],'政策时政':[],'综合资讯':[],'国际视野':[],'加密货币':[],'其他':[]};
+  const gm = {'华尔街见闻':'财经金融','财联社':'财经金融','金十数据':'财经金融','雪球':'财经金融','格隆汇':'财经金融','东方财富':'财经金融','财新网':'财经金融','36氪':'科技互联网','虎嗅':'科技互联网','少数派':'科技互联网','InfoQ':'科技互联网','Hacker News':'科技互联网','TechCrunch':'科技互联网','The Verge':'科技互联网','新华社':'政策时政','中国政府网':'政策时政','人民日报':'政策时政','知乎':'综合资讯','微博':'综合资讯','V2EX':'综合资讯','掘金':'综合资讯','IT之家':'综合资讯','今日头条':'综合资讯','BBC':'国际视野','CNN':'国际视野','路透社':'国际视野','纽约时报':'国际视野','CoinDesk':'加密货币','PANews':'加密货币'};
 
-  // 按分组归类
-  const groups = {
-    '财经金融': [],
-    '科技互联网': [],
-    '政策时政': [],
-    '综合资讯': [],
-    '国际视野': [],
-    '加密货币': [],
-    '其他': []
-  };
-
-  const groupMap = {
-    '华尔街见闻': '财经金融', '财联社': '财经金融', '金十数据': '财经金融',
-    '雪球': '财经金融', '格隆汇': '财经金融', '东方财富': '财经金融', '财新网': '财经金融',
-    '36氪': '科技互联网', '虎嗅': '科技互联网', '少数派': '科技互联网',
-    'InfoQ': '科技互联网', 'Hacker News': '科技互联网', 'TechCrunch': '科技互联网', 'The Verge': '科技互联网',
-    '新华社': '政策时政', '中国政府网': '政策时政', '人民日报': '政策时政',
-    '知乎': '综合资讯', '微博': '综合资讯', 'V2EX': '综合资讯',
-    '掘金': '综合资讯', 'IT之家': '综合资讯', '今日头条': '综合资讯',
-    'BBC': '国际视野', 'CNN': '国际视野', '路透社': '国际视野', '纽约时报': '国际视野',
-    'CoinDesk': '加密货币', 'PANews': '加密货币'
-  };
-
-  allCollectionFeeds.forEach(f => {
-    const matched = Object.keys(groupMap).find(k => (f.title || '').includes(k));
-    const group = matched ? groupMap[matched] : '其他';
-    groups[group].push(f);
+  allAvailableFeeds.forEach(f => {
+    const m = Object.keys(gm).find(k => (f.title||'').includes(k));
+    groups[m ? gm[m] : '其他'].push(f);
   });
 
-  const subscribedCount = allCollectionFeeds.filter(f => f.subscribed).length;
-  const totalCount = allCollectionFeeds.length;
+  const subCount = allAvailableFeeds.filter(f => subscribedFeedUrls.has(f.url)).length;
 
-  content.innerHTML = `
+  document.getElementById('content').innerHTML = `
     <div class="header"><h1>RSS 源管理</h1></div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">共 ${totalCount} 个源，已订阅 ${subscribedCount} 个。点击「订阅」添加感兴趣的源。</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">共 ${allAvailableFeeds.length} 个源，已订阅 ${subCount} 个</div>
     <div class="add-feed">
       <input type="text" id="feed-url" placeholder="输入自定义 RSS 地址">
-      <button onclick="addFeed()">添加</button>
+      <button onclick="addCustomFeed()">添加</button>
     </div>
-    ${Object.entries(groups).filter(([, items]) => items.length > 0).map(([group, items]) => `
+    ${Object.entries(groups).filter(([,v])=>v.length>0).map(([group,items]) => `
       <div style="margin-bottom:20px">
         <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;letter-spacing:1px">${group}（${items.length}）</div>
-        ${items.map(f => `
-          <div class="rule">
+        ${items.map(f => {
+          const isSub = subscribedFeedUrls.has(f.url);
+          return `<div class="rule">
             <div style="flex:1;min-width:0">
               <div style="font-weight:500">${f.title}</div>
               <div style="font-size:12px;color:var(--text3);line-height:1.4;margin-top:2px">${f.description}</div>
             </div>
-            ${f.subscribed
-              ? `<button style="background:none;border:1px solid var(--border);padding:4px 12px;cursor:pointer;font-size:12px;flex-shrink:0;color:var(--text3)" onclick="unsubscribeFeed('${f.id}')">取消订阅</button>`
-              : `<button style="background:var(--text);color:var(--bg);border:none;padding:4px 12px;cursor:pointer;font-size:12px;flex-shrink:0" onclick="subscribeFeed('${f.url}')">订阅</button>`
-            }
-          </div>
-        `).join('')}
-      </div>
-    `).join('')}
-  `;
+            ${isSub
+              ? `<button class="btn-unsub" onclick="doUnsub('${f.url}')">取消订阅</button>`
+              : `<button class="btn-sub" onclick="doSub('${f.url}')">订阅</button>`}
+          </div>`;
+        }).join('')}
+      </div>`).join('')}
+    ${otherCollections.length > 0 ? `
+      <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border)">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:16px;font-weight:700;letter-spacing:1px">其他源集合</div>
+        ${otherCollections.map(c => `
+          <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div><span style="font-weight:500">${c.name}</span><span style="font-size:12px;color:var(--text4);margin-left:8px">${c.feeds.length} 个源</span></div>
+              <button class="btn-sub" onclick="doSubCollection('${c.id}')">订阅全部</button>
+            </div>
+            <div style="font-size:12px;color:var(--text3)">${c.description}</div>
+          </div>`).join('')}
+      </div>` : ''}`;
 }
 
-async function subscribeFeed(url) {
-  await api('private/add-feed', { url: url });
-  await loadFeeds();
-  await loadData();
+async function doSub(url) {
+  await api('private/add-feed', {url});
+  await loadAll();
   renderFeeds();
 }
 
-async function unsubscribeFeed(id) {
-  await api('private/unsubscribe', { feedId: id });
-  await loadFeeds();
-  await loadData();
+async function doUnsub(url) {
+  // 找到 feedId
+  const feedsResp = await api('private/get-feeds');
+  const feed = (feedsResp.feeds||[]).find(f => f.url === url);
+  if (feed) {
+    await api('private/unsubscribe', {feedId: feed.id});
+  }
+  await loadAll();
   renderFeeds();
 }
 
-async function addFeed() {
+async function doSubCollection(id) {
+  await api('private/subscribe-to-collections', {collections: [id]});
+  await loadAll();
+  renderFeeds();
+}
+
+async function addCustomFeed() {
   const input = document.getElementById('feed-url');
   const url = input.value.trim();
   if (!url) return;
-  try {
-    await api('private/add-feed', { url: url });
-    input.value = '';
-    await loadFeeds();
-    await loadData();
-    renderFeeds();
-  } catch (e) {
-    alert('添加失败：' + e.message);
-  }
-}
-
-async function removeFeed(id) {
-  await api('private/unsubscribe', { feedId: id });
-  await loadFeeds();
-  await loadData();
+  await api('private/add-feed', {url});
+  input.value = '';
+  await loadAll();
   renderFeeds();
 }
 
+// ===== 评分规则页 =====
 function renderRules() {
-  const content = document.getElementById('content');
-
-  // 按分组归类
-  const groups = {
-    '央行与货币政策': [],
-    '宏观经济数据': [],
-    '股票市场': [],
-    '金融资产': [],
-    '科技产业': [],
-    '政策与监管': [],
-    '国际与地缘': [],
-    '创业与资本': [],
-    '排除噪音': [],
-    '其他': []
-  };
-
-  const ruleGroupMap = {
-    '央行': '央行与货币政策', '美联储': '央行与货币政策', '降息': '央行与货币政策',
-    '加息': '央行与货币政策', '利率': '央行与货币政策', '货币政策': '央行与货币政策',
-    'GDP': '宏观经济数据', 'CPI': '宏观经济数据', '通胀': '宏观经济数据',
-    '宏观经济': '宏观经济数据', '就业': '宏观经济数据', '财政政策': '宏观经济数据',
-    'A股': '股票市场', '港股': '股票市场', '美股': '股票市场',
-    '股票': '股票市场', 'IPO': '股票市场', '财报': '股票市场',
-    '债券': '金融资产', '外汇': '金融资产', '大宗商品': '金融资产',
-    '石油': '金融资产', '黄金': '金融资产',
-    '人工智能': '科技产业', 'AI': '科技产业', '半导体': '科技产业',
-    '芯片': '科技产业', '新能源': '科技产业', '电动车': '科技产业',
-    '政策': '政策与监管', '国务院': '政策与监管', '监管': '政策与监管',
-    '反垄断': '政策与监管', '房地产': '政策与监管',
-    '贸易': '国际与地缘', '关税': '国际与地缘', '制裁': '国际与地缘',
-    '地缘政治': '国际与地缘',
-    '创业': '创业与资本', '融资': '创业与资本',
-  };
+  const groups = {'央行与货币政策':[],'宏观经济数据':[],'股票市场':[],'金融资产':[],'科技产业':[],'政策与监管':[],'国际与地缘':[],'创业与资本':[],'排除噪音':[],'其他':[]};
+  const rmg = {'央行':'央行与货币政策','美联储':'央行与货币政策','降息':'央行与货币政策','加息':'央行与货币政策','利率':'央行与货币政策','货币政策':'央行与货币政策','GDP':'宏观经济数据','CPI':'宏观经济数据','通胀':'宏观经济数据','宏观经济':'宏观经济数据','就业':'宏观经济数据','财政政策':'宏观经济数据','A股':'股票市场','港股':'股票市场','美股':'股票市场','股票':'股票市场','IPO':'股票市场','财报':'股票市场','债券':'金融资产','外汇':'金融资产','大宗商品':'金融资产','石油':'金融资产','黄金':'金融资产','人工智能':'科技产业','AI':'科技产业','半导体':'科技产业','芯片':'科技产业','新能源':'科技产业','电动车':'科技产业','政策':'政策与监管','国务院':'政策与监管','监管':'政策与监管','反垄断':'政策与监管','房地产':'政策与监管','贸易':'国际与地缘','关税':'国际与地缘','制裁':'国际与地缘','地缘政治':'国际与地缘','创业':'创业与资本','融资':'创业与资本'};
 
   rules.forEach(r => {
-    if (r.excludedTags && r.excludedTags.length > 0) {
-      groups['排除噪音'].push(r);
-    } else {
-      const tag = (r.requiredTags || [])[0] || '';
-      const matched = Object.keys(ruleGroupMap).find(k => tag.includes(k));
-      const group = matched ? ruleGroupMap[matched] : '其他';
-      groups[group].push(r);
-    }
+    if(r.excludedTags && r.excludedTags.length>0) { groups['排除噪音'].push(r); return; }
+    const tag = (r.requiredTags||[])[0]||'';
+    const m = Object.keys(rmg).find(k => tag.includes(k));
+    groups[m ? rmg[m] : '其他'].push(r);
   });
 
-  content.innerHTML = `
+  document.getElementById('content').innerHTML = `
     <div class="header"><h1>评分规则</h1></div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">分数越高，AI 认为越重要的资讯会排在前面。排除规则会过滤掉不需要的内容。</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">分数越高，资讯越重要。排除规则过滤噪音。</div>
     <div class="add-feed">
       <input type="text" id="rule-tag" placeholder="标签名，如 央行">
       <input type="number" id="rule-score" placeholder="分数" value="10" style="width:80px">
       <button onclick="addRule()">添加</button>
     </div>
-    ${Object.entries(groups).filter(([, items]) => items.length > 0).map(([group, items]) => `
+    ${Object.entries(groups).filter(([,v])=>v.length>0).map(([group,items]) => `
       <div style="margin-bottom:20px">
         <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:700;letter-spacing:1px">${group}（${items.length}）</div>
         ${items.map(r => {
-          const isExclude = r.excludedTags && r.excludedTags.length > 0;
-          const tags = isExclude ? r.excludedTags : (r.requiredTags || []);
-          const label = isExclude ? '排除' : `+${r.score}`;
-          const color = isExclude ? 'var(--text3)' : 'var(--accent)';
-          return `
-            <div class="rule">
-              <div class="rule-tags">${tags.map(t => `<span class="tag">#${t}</span>`).join(' ')}</div>
-              <div class="rule-score" style="color:${color}">${label}</div>
-            </div>
-          `;
+          const isEx = r.excludedTags && r.excludedTags.length>0;
+          const tags = isEx ? r.excludedTags : (r.requiredTags||[]);
+          const label = isEx ? '排除' : `+${r.score}`;
+          const color = isEx ? 'var(--text3)' : 'var(--accent)';
+          return `<div class="rule"><div class="rule-tags">${tags.map(t=>`<span class="tag">#${t}</span>`).join(' ')}</div><div class="rule-score" style="color:${color}">${label}</div></div>`;
         }).join('')}
-      </div>
-    `).join('')}
-    ${rules.length === 0 ? '<div class="empty"><h3>还没有评分规则</h3><p>添加规则让 AI 知道你关注什么</p></div>' : ''}
-  `;
+      </div>`).join('')}
+    ${rules.length===0 ? '<div class="empty"><h3>还没有评分规则</h3><p>添加规则让 AI 知道你关注什么</p></div>' : ''}`;
 }
 
 async function addRule() {
   const tag = document.getElementById('rule-tag').value.trim();
   const score = parseInt(document.getElementById('rule-score').value) || 10;
-  if (!tag) return;
-  await api('private/create-or-update-rule', { requiredTags: [tag], excludedTags: [], score });
-  rules.push({ requiredTags: [tag], score });
+  if(!tag) return;
+  await api('private/create-or-update-rule', {requiredTags:[tag], excludedTags:[], score});
+  await loadAll();
   renderRules();
 }
 
-async function loadFeeds() {
-  try {
-    const resp = await api('private/get-feeds');
-    feeds = (resp.feeds || []).map(f => ({ id: f.id, url: f.url, title: f.title, description: f.description || '' }));
-
-    // 标记已订阅的源
-    const subscribedUrls = new Set(feeds.map(f => f.url));
-    allCollectionFeeds.forEach(f => {
-      f.subscribed = subscribedUrls.has(f.url);
-    });
-  } catch (e) { console.error(e); }
-}
-
-async function loadRules() {
-  try {
-    const resp = await api('private/get-rules');
-    rules = (resp.rules || []).map(r => ({ id: r.id, requiredTags: r.requiredTags, score: r.score }));
-  } catch (e) { console.error(e); }
-}
-
-async function init() {
-  // 初始化主题按钮状态
-  const saved = localStorage.getItem('mr-theme') || 'authoritative';
-  document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === saved));
-  await loadData();
-  await loadFeeds();
-  await loadRules();
+// 初始化
+(async function() {
+  const saved = localStorage.getItem('mr-theme')||'authoritative';
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active',b.dataset.theme===saved));
+  await loadAll();
   showView('news');
-}
-
-init();
+})();
 </script>
 </body>
 </html>
